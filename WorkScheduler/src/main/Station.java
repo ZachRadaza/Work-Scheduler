@@ -16,7 +16,7 @@ public class Station{ // schedules employees by station, single day
 	private float[] stationQuietHoursOpen; // stations quiet hours, non busy hours
 	private float[] stationQuietHoursClose;
 	private int[] numEmployees; // {minimum number of employees, maximum, best number}
-	private Queue<Employee> employeeAvailable;
+	private LinkedEmpList employeeAvailable;
 	private int day; // day of the week, 0 is Sunday, 6 is Saturday
 	private ArrayList<Employee> employeeWorking;
 	
@@ -42,7 +42,7 @@ public class Station{ // schedules employees by station, single day
 		this.numEmployees[1] = numEmployeesMax;
 		this.numEmployees[2] = numEmployeesBest;
 		
-		employeeAvailable = new LinkedList<Employee>();
+		this.employeeAvailable = new LinkedEmpList(day);
 		this.setEmployeesAvailable(employeeAvailable);
 		
 		this.employeeWorking = new ArrayList<>();
@@ -126,12 +126,14 @@ public class Station{ // schedules employees by station, single day
 		}
 		scannerTW.close();
 	}
-	
+	//adds employee in queue to linked employee list
 	private void setEmployeesAvailable(Queue<Employee> employeeAvailable){
 		while(!employeeAvailable.isEmpty()){
 			this.employeeAvailable.add(employeeAvailable.remove());
 		}
 	}
+	
+	
 	//getters
 	public String getName(){
 		return this.name;
@@ -140,6 +142,5 @@ public class Station{ // schedules employees by station, single day
 	public int getDay(){
 		return this.day;
 	}
-	
 
 }

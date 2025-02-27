@@ -147,4 +147,18 @@ public class Employee{
 		availabilityHours3[day][0] = open;
 		availabilityHours3[day][1] = close;
 	}
+	@Override //add if statements for hours if more shifts in a day
+	public String toString(){
+		String ret = "";
+		ret += "Name: " + this.nameFirst + " " + this.nameLast;
+		ret += "\nID Number: " + this.idNumber;
+		ret += "Sunday: " + TimeConverter.converterToString(hours[0][0]) + "-" + TimeConverter.converterToString(hours[0][1]) + " in " + station[0];
+		ret += "Monday: " + TimeConverter.converterToString(hours[1][0]) + "-" + TimeConverter.converterToString(hours[1][1]) + " in " + station[1];
+		ret += "Tueday: " + TimeConverter.converterToString(hours[2][0]) + "-" + TimeConverter.converterToString(hours[2][1]) + " in " + station[2];
+		ret += "Wednesday: " + TimeConverter.converterToString(hours[3][0]) + "-" + TimeConverter.converterToString(hours[3][1]) + " in " + station[3];
+		ret += "Thursday: " + TimeConverter.converterToString(hours[4][0]) + "-" + TimeConverter.converterToString(hours[4][1]) + " in " + station[4];
+		ret += "Friday: " + TimeConverter.converterToString(hours[5][0]) + "-" + TimeConverter.converterToString(hours[5][1]) + " in " + station[5];
+		ret += "Satday: " + TimeConverter.converterToString(hours[6][0]) + "-" + TimeConverter.converterToString(hours[6][1]) + " in " + station[6];
+		return ret;
+	}
 }
