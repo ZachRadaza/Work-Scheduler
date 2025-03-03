@@ -23,9 +23,6 @@ public class Employee{
 	private boolean availabilityHours3Exist;
 	
 	public float[][] hours; //final hours working, army time
-	public float[][] hours2; //in case more shifts in one day
-	public float[][] hours3;
-	
 	
 	public Employee(String nameFirst, String nameLast, int idNumber, int numberOfStations, String stationsCanWorkRaw, String availSun, String availMon, String availTue, String availWed, String availThur, String availFri, String availSat){
 		this.nameFirst = nameFirst;
@@ -49,8 +46,6 @@ public class Employee{
 		this.setAvailabiilyPerDay(availSun, availMon, availTue, availWed, availThur, availFri, availSat);
 
 		hours = new float[7][2];
-		hours2 = new float[7][2];
-		hours3 = new float[7][2];
 	}
 	
 	//methods to assist object creation

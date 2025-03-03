@@ -20,6 +20,7 @@ public class TimeConverter{
 		min = minToDec(min);
 		
 		scanner.close();
+		
 		return hour + min;
 	}
 	// converts Decimal to string

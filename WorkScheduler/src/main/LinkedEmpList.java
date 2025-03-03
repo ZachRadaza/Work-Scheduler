@@ -16,33 +16,13 @@ public class LinkedEmpList{
 		this.size = 0;
 	}
 	
-	//adds it in order of availability in a day
+	//adds it in order of availability in a day, greater hours bias
 	public void add(Employee employee){
 		Node newNode = new Node();
 		newNode.data = employee;
 		if(head == null){
 			head = newNode;
-		} else if (head.next == null){
-			//checks if opening is equal
-			if(newNode.data.getAvailabilityHours(day, 0) == head.data.getAvailabilityHours(day, 0)){
-				//checks if closing is equal or greater than
-				if(newNode.data.getAvailabilityHours(day, 1) >= head.data.getAvailabilityHours(day, 1)){
-					head.next = newNode;
-				//if new node is less than
-				} else {
-					Node temp = head;
-					head = newNode;
-					head.next = temp;
-				}
-			//if new node is greater than
-			} else if (newNode.data.getAvailabilityHours(day, 0) > head.data.getAvailabilityHours(day, 0)){
-				head.next = newNode;
-			} else {
-				Node temp = head;
-				head = newNode;
-				head.next = temp;
-			}
-		//other add case, more than head and head.next
+		//other add case, more than head
 		} else {
 			Node current = head;
 			addHelper(current, newNode);
@@ -60,6 +40,8 @@ public class LinkedEmpList{
 			if(newNode.data.getAvailabilityHours(day, 1) >= head.data.getAvailabilityHours(day, 1)){
 				temp = current.next;
 				current.next = newNode;
+				if(current.next.next == null)
+					current.next.next = new Node();
 				current.next.next = temp;
 			//if new node is greater than
 			} else {

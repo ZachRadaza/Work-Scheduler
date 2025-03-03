@@ -12,6 +12,7 @@ public class Main{
 			System.out.println(test1.getStation(i));
 		}
 		*/
+		// TODO: Bounds check everything
 		
 		LinkedEmpList test = new LinkedEmpList(0);
 		test.add(new Employee("Nia", "Radaza", 303378790, 3, "yabadabadoo", "7:30-13:30", "7:30-12:30", "7:30-12:30", "7:30-12:30", "7:30-12:30", "7:30-12:30", "7:30-12:30"));

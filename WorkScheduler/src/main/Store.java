@@ -1,14 +1,13 @@
 package main;
 
 import java.util.HashSet;
-import java.util.Queue;
-import java.util.LinkedList;
 import java.util.ArrayList;
 
 public class Store{ //incorporates schedule made by stations, by day
 	
 	public HashSet<Employee> employeesAll;
 	public ArrayList<Station> stations; //for a specific day, all stations
+	public static LinkedEmpList employeesAvailable;
 	private int day;
 	
 	public Store(int day, String filePathEmployee, String filePathStation){		
@@ -19,6 +18,9 @@ public class Store{ //incorporates schedule made by stations, by day
 		
 		employeesAll = new HashSet<>();
 		setEmployeesAll(filePathEmployee);
+		
+		employeesAvailable = new LinkedEmpList(day);
+		setEmployeesAvailable();
 		
 		stations = new ArrayList<>();
 		setStationsDay(filePathStation);
@@ -36,18 +38,14 @@ public class Store{ //incorporates schedule made by stations, by day
 	private void setStationsDay(String filePathStation){
 		//FileRead.readFileStore(filePathStation);
 		for(int i = 0; i < FileRead.getNumberOfStations(); i++){
-			stations.add(new Station(FileRead.getStationName(), day, FileRead.getTimeOpen(), FileRead.getTimeClose(), FileRead.getBusyHours(), FileRead.getQuietHours(), FileRead.getMinNumEmp(), FileRead.getMaxNumEmp(), FileRead.getEffNumEmp(), this.setEmployeeAvailable()));
+			stations.add(new Station(FileRead.getStationName(), day, FileRead.getTimeOpen(), FileRead.getTimeClose(), FileRead.getBusyHours(), FileRead.getQuietHours(), FileRead.getMinNumEmp(), FileRead.getMaxNumEmp(), FileRead.getEffNumEmp()));
 		}
 	}
-	// adds employees available to queue on a certain day
-	private Queue<Employee> setEmployeeAvailable(){ 
-		Queue<Employee> employeesAvail = new LinkedList<>();
-		
+	// adds employees available on a certain day
+	private void setEmployeesAvailable(){ 
 		for(Employee employee: employeesAll){
-			if(employee.getAvailabilityDay(day)) employeesAvail.add(employee);
+			if(employee.getAvailabilityDay(day)) Store.employeesAvailable.add(employee);
 		}
-		
-		return employeesAvail;	
 	}
 	
 	//getters
