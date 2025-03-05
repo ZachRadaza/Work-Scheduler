@@ -131,6 +131,13 @@ public class Employee{
 		return availabilityHours3Exist;
 	}
 	
+	public String getStationsCanWork(int i){
+		return stationsCanWork[i];
+	}
+	
+	public int getStationsCanWorkSize(){
+		return stationsCanWork.length;
+	}
 	// setters
 	
 	public void setAvailabilityHours2(int day, float open, float close){

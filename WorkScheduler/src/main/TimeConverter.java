@@ -30,7 +30,12 @@ public class TimeConverter{
 		
 		String hour = hourInt.toString();
 		String min = decToMin(minFloat);
-		
+		if(hourInt <= 9){
+			hour = "0" + hour;
+		}
+		if(minFloat <= 0.09f){
+			min = "0" + min;
+		}
 		return hour + ":" + min;
 	}
 	

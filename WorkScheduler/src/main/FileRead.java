@@ -49,7 +49,7 @@ public class FileRead{
 			while(readFile.hasNext()){
 				//read station name, adds to queue
 				readFile.next();
-				token = readFile.next().trim();
+				token = readFile.next().trim().toUpperCase();
 				stationNames.add(token);
 				
 				//read times
@@ -118,13 +118,12 @@ public class FileRead{
 			//loops for each employee
 			while(fileRead.hasNext()){
 				//adds first name
-				//fileRead.next();
 				fileRead.next();
-				token = fileRead.next().trim();
+				token = fileRead.next().trim().toUpperCase();
 				empNameFirst.add(token);
 				//adds last name
 				fileRead.next();
-				token = fileRead.next().trim();
+				token = fileRead.next().trim().toUpperCase();
 				empNameLast.add(token);
 				//adds to days
 				fileRead.next();
@@ -161,7 +160,7 @@ public class FileRead{
 				empSatAvail.add(token);
 				//adds stations they can work in
 				fileRead.next();
-				token = fileRead.next().trim();
+				token = fileRead.next().trim().toUpperCase();
 				empStations.add(token);
 				
 				numberOfEmp++;

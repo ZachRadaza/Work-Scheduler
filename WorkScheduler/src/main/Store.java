@@ -7,7 +7,7 @@ public class Store{ //incorporates schedule made by stations, by day
 	
 	public HashSet<Employee> employeesAll;
 	public ArrayList<Station> stations; //for a specific day, all stations
-	public static LinkedEmpList employeesAvailable;
+	public static ArrayEmpList employeesAvailable;
 	private int day;
 	
 	public Store(int day, String filePathEmployee, String filePathStation){		
@@ -19,7 +19,7 @@ public class Store{ //incorporates schedule made by stations, by day
 		employeesAll = new HashSet<>();
 		setEmployeesAll(filePathEmployee);
 		
-		employeesAvailable = new LinkedEmpList(day);
+		employeesAvailable = new ArrayEmpList(day);
 		setEmployeesAvailable();
 		
 		stations = new ArrayList<>();
@@ -57,6 +57,16 @@ public class Store{ //incorporates schedule made by stations, by day
 		String test  = "";
 		test += "name:" + stations.get(i).getName();
 		return test;
+	}
+	//TODO:
+	public String toString(){
+		String ret = "";
+		String[] dayString = {"Sunday", "Monday", "Tueday", "Wednesday", "Thursday", "Friday", "Saturday"};
+		ret += dayString[this.day] + ":\n";
+		for(int i = 0; i < stations.size(); i++){
+			ret += stations.get(i).toString();
+		}
+		return ret;
 	}
 	
 }

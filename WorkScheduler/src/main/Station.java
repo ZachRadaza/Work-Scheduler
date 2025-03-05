@@ -12,7 +12,7 @@ public class Station{ // schedules employees by station, single day
 	private float[] stationQuietHoursClose;
 	private int[] numEmployees; // {minimum number of employees, maximum, best number}
 	private int day; // day of the week, 0 is Sunday, 6 is Saturday
-	private LinkedEmpList employeeWorking;
+	private ArrayEmpList employeeWorking;
 	
 	public Station(String name, int day, float stationHoursOpen, float stationHoursClose, String stationBusyHoursString, String stationQuietHoursString, int numEmployeesMin, int numEmployeesMax, int numEmployeesBest){
 		this.name = name;
@@ -36,7 +36,9 @@ public class Station{ // schedules employees by station, single day
 		this.numEmployees[1] = numEmployeesMax;
 		this.numEmployees[2] = numEmployeesBest;
 		
-		this.employeeWorking = new LinkedEmpList(day);
+		this.employeeWorking = new ArrayEmpList(day);
+		
+		schedEmp();
 	}
 	
 	//methods to help object creations, setters
@@ -132,7 +134,11 @@ public class Station{ // schedules employees by station, single day
 	}
 	
 	//methods to create schedule
-	
+	public void schedEmp(){
+		if(employeeWorking.isEmpty()){
+			sched1stLayerEmp();
+		}
+	}
 	//schedules first layer of employees, makes sure there is at least one employee the whole time they are open
 	private void sched1stLayerEmp(){
 		//checks if every hours has at least one employee
@@ -140,10 +146,9 @@ public class Station{ // schedules employees by station, single day
 			return;
 		//checks if empty, adds opening person
 		} else if(employeeWorking.isEmpty()){
-			int i = 0;
-			while(!Store.employeesAvailable.isEmpty()){
+			for(int i = 0; i < Store.employeesAvailable.size(); i++){
 				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
-				if(Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= stationHours[0] && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - stationHours[0]) >= 3){
+				if((Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= stationHours[0]) && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - stationHours[0]) >= 3){
 					employeeWorking.add(Store.employeesAvailable.remove(i));
 					employeeWorking.get(0).hours[day][0] = employeeWorking.get(0).getAvailabilityHours(day, 0);
 					employeeWorking.get(0).hours[day][1] = employeeWorking.get(0).getAvailabilityHours(day, 1);
@@ -157,11 +162,14 @@ public class Station{ // schedules employees by station, single day
 					if(employeeWorking.get(0).hours[day][1] > stationHours[1]){
 						employeeWorking.get(0).hours[day][1] = stationHours[1];
 					}
+					toString();
 					break;
 				}
-				i++;
 			}
+			
+			sched1stLayerEmp();
 		} else {
+			System.out.println(2);
 			if(!sched1stLayerEmpHelper(1)){
 				if(!sched1stLayerEmpHelper(2)) {
 					if(!sched1stLayerEmpHelper(3)){
@@ -176,6 +184,13 @@ public class Station{ // schedules employees by station, single day
 	private boolean sched1stLayerEmpHelper(int availNum){
 		boolean found = false;
 		if(availNum == 1){
+			System.out.println(1);
+			//int j = Store.employeesAvailable.search(employeeWorking.get(employeeWorking.size()-1).hours[day][1], 0);
+			//if(j > -1){
+				//employeeWorking.add(Store.employeesAvailable.remove(j));
+				//found = true;
+				//return found;
+			//}
 			for(int i = 0; i < Store.employeesAvailable.size(); i++){
 				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
 				if(Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1] && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3){
@@ -247,42 +262,24 @@ public class Station{ // schedules employees by station, single day
 	}
 	//checks all possibilities of the base case
 	private boolean sched1stLayerEmpBaseCase(){
-		if((employeeWorking.get(0).getAvailabilityHours(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 1) >= stationHours[1])){
+		if(employeeWorking.isEmpty()){
+			return false;
+		} else if((employeeWorking.get(0).hours[day][0] <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).hours[day][1] == stationHours[1])){
 			return true;
-		} else if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2Exists()){
-			if((employeeWorking.get(0).getAvailabilityHours(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 1) >= stationHours[1])){
-				return true;
-			}
-		} else if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3Exists()){
-			if((employeeWorking.get(0).getAvailabilityHours(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 1) >= stationHours[1])){
-				return true;
-			}
-		} else if(employeeWorking.get(0).getAvailabilityHours2Exists()){
-			if((employeeWorking.get(0).getAvailabilityHours2(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 1) >= stationHours[1])){
-				return true;
-			} else if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2Exists()){
-				if((employeeWorking.get(0).getAvailabilityHours2(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 1) >= stationHours[1])){
-					return true;
-				}
-			} else if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3Exists()){
-				if((employeeWorking.get(0).getAvailabilityHours2(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 1) >= stationHours[1])){
-					return true;
-				}
-			}
-		} else if(employeeWorking.get(0).getAvailabilityHours3Exists()){
-			if((employeeWorking.get(0).getAvailabilityHours3(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 1) >= stationHours[1])){
-				return true;
-			} else if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2Exists()){
-				if((employeeWorking.get(0).getAvailabilityHours3(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 1) >= stationHours[1])){
-					return true;
-				}
-			} else if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3Exists()){
-				if((employeeWorking.get(0).getAvailabilityHours3(day, 0) <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 1) >= stationHours[1])){
-					return true;
-				}
-			}
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString(){
+		String ret = "";
+		ret += this.name + ":\n";
+		for(int i = 0; i < employeeWorking.size(); i++){
+			ret += (i + 1) + ". ";
+			ret += employeeWorking.get(i).getNameLast() + ", " + employeeWorking.get(i).getNameFirst() + ": " + TimeConverter.converterToString(employeeWorking.get(i).hours[this.day][0]) + "-" + TimeConverter.converterToString(employeeWorking.get(i).hours[this.day][1]);
+			ret += "\n";
+		}
+		return ret;
 	}
 
 }

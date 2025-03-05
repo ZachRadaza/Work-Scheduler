@@ -2,34 +2,10 @@ Name of Establishment~Pookie
 
 ~Stations
 
-Name~ Tatriotta
-~Time~9:00-10:00
+Name~ Cold Stone
+~Time~9:00-22:00
 ~Busy Hours~4:00-5:00, 9:00-11:00
 ~Quiet Hours~1:00-2:00
 ~Minimum Number of Employees~1
 ~Maximum Number of Employees~3
-~Efficient Number of Employees~2
-
-~Name~Under The Hood
-~Time~3:30-9:30
-~Busy Hours~4:00-5:00, 9:00-11:00
-~Quiet Hours~4:00-5:00, 9:00-11:00
-~Minimum Number of Employees~2
-~Maximum Number of Employees~4
-~Efficient Number of Employees~3
-
-~Name~Local Loaf
-~Time~5:45-9:45
-~Busy Hours~4:00-5:00, 9:00-11:00
-~Quiet Hours~4:00-5:00, 9:00-11:00
-~Minimum Number of Employees~1
-~Maximum Number of Employees~1
-~Efficient Number of Employees~1
-
-~Name~Global Kitchen
-~Time~16:15-21:15
-~Busy Hours~4:00-5:00, 9:00-11:00
-~Quiet Hours~4:00-5:00, 9:00-11:00
-~Minimum Number of Employees~1
-~Maximum Number of Employees~2
 ~Efficient Number of Employees~2
