@@ -45,3 +45,51 @@
 ~Friday Availability~3:30-9:30
 ~Saturday Availability~3:30-9:30
 ~Stations Employee Can Work In~Cold Stone
+
+~First Name~Zach1
+~Last Name~Radaza1
+~ID Number~32047555
+~Sunday Availability~7:30-13:30
+~Monday Availability~3:30-9:30
+~Tuesday Availability~3:30-9:30
+~Wednesday Availability~3:30-9:30
+~Thursday Availability~3:30-9:30
+~Friday Availability~3:30-9:30
+~Saturday Availability~3:30-9:30
+~Stations Employee Can Work In~Cold Stone
+
+~First Name~Arnold Jest1
+~Last Name~Romero1
+~ID Number~93483202
+~Sunday Availability~13:30-17:00
+~Monday Availability~3:30-9:30
+~Tuesday Availability~3:30-9:30
+~Wednesday Availability~3:30-9:30
+~Thursday Availability~3:30-9:30
+~Friday Availability~3:30-9:30
+~Saturday Availability~3:30-9:30
+~Stations Employee Can Work In~Cold Stone
+
+~First Name~Ron1
+~Last Name~Suplito1
+~ID Number~095234582
+~Sunday Availability~17:00-22:30
+~Monday Availability~3:30-9:30
+~Tuesday Availability~3:30-9:30
+~Wednesday Availability~3:30-9:30
+~Thursday Availability~3:30-9:30
+~Friday Availability~3:30-9:30
+~Saturday Availability~3:30-9:30
+~Stations Employee Can Work In~Cold Stone
+
+~First Name~Chelsey Michelle1
+~Last Name~Arevalo1
+~ID Number~023948234
+~Sunday Availability~20:00-23:00
+~Monday Availability~3:30-9:30
+~Tuesday Availability~3:30-9:30
+~Wednesday Availability~3:30-9:30
+~Thursday Availability~3:30-9:30
+~Friday Availability~3:30-9:30
+~Saturday Availability~3:30-9:30
+~Stations Employee Can Work In~Cold Stone

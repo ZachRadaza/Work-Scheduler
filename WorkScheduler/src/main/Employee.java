@@ -29,7 +29,7 @@ public class Employee{
 		this.nameLast = nameLast;
 		this.idNumber = idNumber;
 		
-		this.stationsCanWork = new String[numberOfStations];
+		this.stationsCanWork = new String[8];
 		setStationsCanWork(stationsCanWorkRaw);
 		
 		this.station = new String[7]; // 7 days in a week

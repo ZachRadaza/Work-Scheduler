@@ -15,7 +15,7 @@ public class Station{ // schedules employees by station, single day
 	private int day; // day of the week, 0 is Sunday, 6 is Saturday
 	private ArrayEmpList employeeWorkingIO; //employee working in order
 	private ArrayList<Employee> employeeWorking;
-	private int indexScheduler;
+	private static int indexScheduler = 0; //for managing layer starts, index of the start of new layer
 	
 	public Station(String name, int day, float stationHoursOpen, float stationHoursClose, String stationBusyHoursString, String stationQuietHoursString, int numEmployeesMin, int numEmployeesMax, int numEmployeesBest){
 		this.name = name;
@@ -41,7 +41,7 @@ public class Station{ // schedules employees by station, single day
 		
 		this.employeeWorkingIO = new ArrayEmpList(day);
 		this.employeeWorking = new ArrayList<>();
-		this.indexScheduler = 0; //for managing layer starts, index of the start of new layer
+		
 		
 		schedEmp();
 	}
@@ -141,51 +141,53 @@ public class Station{ // schedules employees by station, single day
 	//methods to create schedule
 	public void schedEmp(){
 		if(employeeWorking.isEmpty()){
-			sched1stLayerEmp();
+			for(int i = 0; i < numEmployees[0]; i++){
+				sched1stLayerEmp();
+			}
 		}
 	}
 	//schedules first layer of employees, makes sure there is at least one employee the whole time they are open
 	private void sched1stLayerEmp(){
-		for(int j = 0; j < numEmployees[0]; j++){
-			//checks if every hours has at least one employee
-			if(sched1stLayerEmpBaseCase()){
-				this.indexScheduler = employeeWorking.size();
-				return;
-				//checks if empty for that layer, adds opening person
-			} else if(employeeWorking.size() == indexScheduler){
-				for(int i = 0; i < Store.employeesAvailable.size(); i++){
-					//checks if they are available before or on the opening time, and shift length is greater than 3 hours
-					if((Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= stationHours[0]) && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - stationHours[0]) >= 3){
-						employeeWorking.add(Store.employeesAvailable.remove(i));
-						employeeWorking.get(indexScheduler).hours[day][0] = employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0);
-						employeeWorking.get(indexScheduler).hours[day][1] = employeeWorking.get(indexScheduler).getAvailabilityHours(day, 1);
-						//fixing time on hours
-						if(employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0) < stationHours[0]){
-							employeeWorking.get(indexScheduler).hours[day][0] = stationHours[0];
-						}
-						if((employeeWorking.get(indexScheduler).getAvailabilityHours(day, 1) - employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0)) > 8f){
-							employeeWorking.get(indexScheduler).hours[day][1] = employeeWorking.get(indexScheduler).hours[day][0] + 8f;
-						}
-						if(employeeWorking.get(indexScheduler).hours[day][1] > stationHours[1]){
-							employeeWorking.get(indexScheduler).hours[day][1] = stationHours[1];
-						}
-						employeeWorkingIO.add(employeeWorking.get(employeeWorking.size() - 1)); // adds to ordered employee
-						break;
+		//checks if every hours has at least one employee
+		if(sched1stLayerEmpBaseCase()){
+			Station.indexScheduler = employeeWorking.size();
+			return;
+			//checks if empty for that layer, adds opening person
+		} else if(employeeWorking.size() == indexScheduler){
+			for(int i = 0; i < Store.employeesAvailable.size(); i++){
+				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
+				if((schedCanWorkStation(i)) && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= stationHours[0]) && ((Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - stationHours[0]) >= 3)){// && (schedCanWorkStation(i))){
+					
+					employeeWorking.add(Store.employeesAvailable.remove(i));
+					employeeWorking.get(indexScheduler).hours[day][0] = employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0);
+					employeeWorking.get(indexScheduler).hours[day][1] = employeeWorking.get(indexScheduler).getAvailabilityHours(day, 1);
+					//fixing time on hours
+					if(employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0) < stationHours[0]){
+						employeeWorking.get(indexScheduler).hours[day][0] = stationHours[0];
 					}
+					if((employeeWorking.get(indexScheduler).getAvailabilityHours(day, 1) - employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0)) > 8f){
+						employeeWorking.get(indexScheduler).hours[day][1] = employeeWorking.get(indexScheduler).hours[day][0] + 8f;
+					}
+					if(employeeWorking.get(indexScheduler).hours[day][1] > stationHours[1]){
+						employeeWorking.get(indexScheduler).hours[day][1] = stationHours[1];
+					}
+					employeeWorkingIO.add(employeeWorking.get(employeeWorking.size() - 1)); // adds to ordered employee
+					break;
 				}
-			
-			} else {
-				if(!sched1stLayerEmpHelper(1)){
-					if(!sched1stLayerEmpHelper(2)) {
-						if(!sched1stLayerEmpHelper(3)){
-							System.out.println("Hire some more people");
-							return;
-						}
+			}
+			sched1stLayerEmp(); //recursion
+		} else {
+			if(!sched1stLayerEmpHelper(1)){
+				if(!sched1stLayerEmpHelper(2)) {
+					if(!sched1stLayerEmpHelper(3)){
+						System.out.println("Hire some more people");
+						return;
 					}
 				}
 			}
 			sched1stLayerEmp(); //recursion
 		}
+		
 	}
 	
 	private boolean sched1stLayerEmpHelper(int availNum){
@@ -193,7 +195,7 @@ public class Station{ // schedules employees by station, single day
 		if(availNum == 1){
 			for(int i = 0; i < Store.employeesAvailable.size(); i++){
 				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
-				if(Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1] && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3){
+				if((schedCanWorkStation(i)) && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) && ((Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3)){// && (schedCanWorkStation(i))){
 					employeeWorking.add(Store.employeesAvailable.remove(i));
 					employeeWorking.get(employeeWorking.size() - 1).hours[day][0] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 0);
 					employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 1);
@@ -216,7 +218,7 @@ public class Station{ // schedules employees by station, single day
 			for(int i = 0; i < Store.employeesAvailable.size(); i++){
 				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
 				if(Store.employeesAvailable.get(i).getAvailabilityHours2Exists()){
-					if(Store.employeesAvailable.get(i).getAvailabilityHours2(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1] && (Store.employeesAvailable.get(i).getAvailabilityHours2(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3){
+					if((schedCanWorkStation(i)) && (Store.employeesAvailable.get(i).getAvailabilityHours2(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) && ((Store.employeesAvailable.get(i).getAvailabilityHours2(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3)){// && schedCanWorkStation(i)){
 						employeeWorking.add(Store.employeesAvailable.remove(i));
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][0] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 0);
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 1);
@@ -240,7 +242,7 @@ public class Station{ // schedules employees by station, single day
 			for(int i = 0; i < Store.employeesAvailable.size(); i++){
 				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
 				if(Store.employeesAvailable.get(i).getAvailabilityHours3Exists()){
-					if(Store.employeesAvailable.get(i).getAvailabilityHours3(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1] && (Store.employeesAvailable.get(i).getAvailabilityHours3(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3){
+					if((schedCanWorkStation(i)) && (Store.employeesAvailable.get(i).getAvailabilityHours3(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) && ((Store.employeesAvailable.get(i).getAvailabilityHours3(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3) && (schedCanWorkStation(i))){
 						employeeWorking.add(Store.employeesAvailable.remove(i));
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][0] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 0);
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 1);
@@ -265,10 +267,19 @@ public class Station{ // schedules employees by station, single day
 	}
 	//checks all possibilities of the base case
 	private boolean sched1stLayerEmpBaseCase(){
-		if(employeeWorking.size() == indexScheduler){
+		if(employeeWorking.size() == Station.indexScheduler){
 			return false;
 		} else if((employeeWorking.get(indexScheduler).hours[day][0] <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).hours[day][1] == stationHours[1])){
 			return true;
+		}
+		return false;
+	}
+	
+	private boolean schedCanWorkStation(int indexEmpAvail){
+		for(int k = 0; k < Store.employeesAvailable.get(indexEmpAvail).getStationsCanWorkSize(); k++){
+			if(Store.employeesAvailable.get(indexEmpAvail).getStationsCanWork(k).equals(this.name)){
+				return true;
+			}
 		}
 		return false;
 	}
