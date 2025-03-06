@@ -1,6 +1,7 @@
 package main;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Station{ // schedules employees by station, single day
 	
@@ -12,7 +13,9 @@ public class Station{ // schedules employees by station, single day
 	private float[] stationQuietHoursClose;
 	private int[] numEmployees; // {minimum number of employees, maximum, best number}
 	private int day; // day of the week, 0 is Sunday, 6 is Saturday
-	private ArrayEmpList employeeWorking;
+	private ArrayEmpList employeeWorkingIO; //employee working in order
+	private ArrayList<Employee> employeeWorking;
+	private int indexScheduler;
 	
 	public Station(String name, int day, float stationHoursOpen, float stationHoursClose, String stationBusyHoursString, String stationQuietHoursString, int numEmployeesMin, int numEmployeesMax, int numEmployeesBest){
 		this.name = name;
@@ -36,7 +39,9 @@ public class Station{ // schedules employees by station, single day
 		this.numEmployees[1] = numEmployeesMax;
 		this.numEmployees[2] = numEmployeesBest;
 		
-		this.employeeWorking = new ArrayEmpList(day);
+		this.employeeWorkingIO = new ArrayEmpList(day);
+		this.employeeWorking = new ArrayList<>();
+		this.indexScheduler = 0; //for managing layer starts, index of the start of new layer
 		
 		schedEmp();
 	}
@@ -141,56 +146,51 @@ public class Station{ // schedules employees by station, single day
 	}
 	//schedules first layer of employees, makes sure there is at least one employee the whole time they are open
 	private void sched1stLayerEmp(){
-		//checks if every hours has at least one employee
-		if(sched1stLayerEmpBaseCase()){
-			return;
-		//checks if empty, adds opening person
-		} else if(employeeWorking.isEmpty()){
-			for(int i = 0; i < Store.employeesAvailable.size(); i++){
-				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
-				if((Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= stationHours[0]) && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - stationHours[0]) >= 3){
-					employeeWorking.add(Store.employeesAvailable.remove(i));
-					employeeWorking.get(0).hours[day][0] = employeeWorking.get(0).getAvailabilityHours(day, 0);
-					employeeWorking.get(0).hours[day][1] = employeeWorking.get(0).getAvailabilityHours(day, 1);
-					//fixing time on hours
-					if(employeeWorking.get(0).getAvailabilityHours(day, 0) < stationHours[0]){
-						employeeWorking.get(0).hours[day][0] = stationHours[0];
+		for(int j = 0; j < numEmployees[0]; j++){
+			//checks if every hours has at least one employee
+			if(sched1stLayerEmpBaseCase()){
+				this.indexScheduler = employeeWorking.size();
+				return;
+				//checks if empty for that layer, adds opening person
+			} else if(employeeWorking.size() == indexScheduler){
+				for(int i = 0; i < Store.employeesAvailable.size(); i++){
+					//checks if they are available before or on the opening time, and shift length is greater than 3 hours
+					if((Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= stationHours[0]) && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - stationHours[0]) >= 3){
+						employeeWorking.add(Store.employeesAvailable.remove(i));
+						employeeWorking.get(indexScheduler).hours[day][0] = employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0);
+						employeeWorking.get(indexScheduler).hours[day][1] = employeeWorking.get(indexScheduler).getAvailabilityHours(day, 1);
+						//fixing time on hours
+						if(employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0) < stationHours[0]){
+							employeeWorking.get(indexScheduler).hours[day][0] = stationHours[0];
+						}
+						if((employeeWorking.get(indexScheduler).getAvailabilityHours(day, 1) - employeeWorking.get(indexScheduler).getAvailabilityHours(day, 0)) > 8f){
+							employeeWorking.get(indexScheduler).hours[day][1] = employeeWorking.get(indexScheduler).hours[day][0] + 8f;
+						}
+						if(employeeWorking.get(indexScheduler).hours[day][1] > stationHours[1]){
+							employeeWorking.get(indexScheduler).hours[day][1] = stationHours[1];
+						}
+						employeeWorkingIO.add(employeeWorking.get(employeeWorking.size() - 1)); // adds to ordered employee
+						break;
 					}
-					if((employeeWorking.get(0).getAvailabilityHours(day, 1) - employeeWorking.get(0).getAvailabilityHours(day, 0)) > 8f){
-						employeeWorking.get(0).hours[day][1] = employeeWorking.get(0).hours[day][0] + 8f;
-					}
-					if(employeeWorking.get(0).hours[day][1] > stationHours[1]){
-						employeeWorking.get(0).hours[day][1] = stationHours[1];
-					}
-					toString();
-					break;
 				}
-			}
 			
-			sched1stLayerEmp();
-		} else {
-			System.out.println(2);
-			if(!sched1stLayerEmpHelper(1)){
-				if(!sched1stLayerEmpHelper(2)) {
-					if(!sched1stLayerEmpHelper(3)){
-						System.out.println("Hire some more people");
+			} else {
+				if(!sched1stLayerEmpHelper(1)){
+					if(!sched1stLayerEmpHelper(2)) {
+						if(!sched1stLayerEmpHelper(3)){
+							System.out.println("Hire some more people");
+							return;
+						}
 					}
 				}
 			}
-			sched1stLayerEmp();
+			sched1stLayerEmp(); //recursion
 		}
 	}
 	
 	private boolean sched1stLayerEmpHelper(int availNum){
 		boolean found = false;
 		if(availNum == 1){
-			System.out.println(1);
-			//int j = Store.employeesAvailable.search(employeeWorking.get(employeeWorking.size()-1).hours[day][1], 0);
-			//if(j > -1){
-				//employeeWorking.add(Store.employeesAvailable.remove(j));
-				//found = true;
-				//return found;
-			//}
 			for(int i = 0; i < Store.employeesAvailable.size(); i++){
 				//checks if they are available before or on the opening time, and shift length is greater than 3 hours
 				if(Store.employeesAvailable.get(i).getAvailabilityHours(day, 0) <= employeeWorking.get(employeeWorking.size() - 1).hours[day][1] && (Store.employeesAvailable.get(i).getAvailabilityHours(day, 1) - employeeWorking.get(employeeWorking.size() - 1).hours[day][1]) >= 3){
@@ -199,7 +199,7 @@ public class Station{ // schedules employees by station, single day
 					employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 1);
 					//fixing time on hours
 					if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 0) < employeeWorking.get(employeeWorking.size() - 2).hours[day][1]){
-						employeeWorking.get(0).hours[day][0] = employeeWorking.get(employeeWorking.size() - 2).hours[day][1];
+						employeeWorking.get(employeeWorking.size() - 1).hours[day][0] = employeeWorking.get(employeeWorking.size() - 2).hours[day][1];
 					}
 					if((employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 1) - employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours(day, 0)) > 8f){
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).hours[day][0] + 8f;
@@ -207,6 +207,7 @@ public class Station{ // schedules employees by station, single day
 					if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] > stationHours[1]){
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = stationHours[1];
 					}
+					employeeWorkingIO.add(employeeWorking.get(employeeWorking.size() - 1)); // adds to ordered employee
 					found = true;
 					break;
 				}
@@ -221,7 +222,7 @@ public class Station{ // schedules employees by station, single day
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 1);
 						//fixing time on hours
 						if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 0) < employeeWorking.get(employeeWorking.size() - 2).hours[day][1]){
-							employeeWorking.get(0).hours[day][0] = employeeWorking.get(employeeWorking.size() - 2).hours[day][1];
+							employeeWorking.get(employeeWorking.size()- 1).hours[day][0] = employeeWorking.get(employeeWorking.size() - 2).hours[day][1];
 						}
 						if((employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 1) - employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours2(day, 0)) > 8f){
 							employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).hours[day][0] + 8f;
@@ -229,6 +230,7 @@ public class Station{ // schedules employees by station, single day
 						if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] > stationHours[1]){
 							employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = stationHours[1];
 						}
+						employeeWorkingIO.add(employeeWorking.get(employeeWorking.size() - 1)); // adds to ordered employee
 						found = true;
 						break;
 					}
@@ -244,7 +246,7 @@ public class Station{ // schedules employees by station, single day
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 1);
 						//fixing time on hours
 						if(employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 0) < employeeWorking.get(employeeWorking.size() - 2).hours[day][1]){
-							employeeWorking.get(0).hours[day][0] = employeeWorking.get(employeeWorking.size() - 2).hours[day][1];
+							employeeWorking.get(employeeWorking.size() - 1).hours[day][0] = employeeWorking.get(employeeWorking.size() - 2).hours[day][1];
 						}
 						if((employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 1) - employeeWorking.get(employeeWorking.size() - 1).getAvailabilityHours3(day, 0)) > 8f){
 							employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = employeeWorking.get(employeeWorking.size() - 1).hours[day][0] + 8f;
@@ -252,6 +254,7 @@ public class Station{ // schedules employees by station, single day
 						if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] > stationHours[1]){
 							employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = stationHours[1];
 						}
+						employeeWorkingIO.add(employeeWorking.get(employeeWorking.size() - 1)); // adds to ordered employee
 						found = true;
 						break;
 					}
@@ -262,9 +265,9 @@ public class Station{ // schedules employees by station, single day
 	}
 	//checks all possibilities of the base case
 	private boolean sched1stLayerEmpBaseCase(){
-		if(employeeWorking.isEmpty()){
+		if(employeeWorking.size() == indexScheduler){
 			return false;
-		} else if((employeeWorking.get(0).hours[day][0] <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).hours[day][1] == stationHours[1])){
+		} else if((employeeWorking.get(indexScheduler).hours[day][0] <= stationHours[0]) && (employeeWorking.get(employeeWorking.size() - 1).hours[day][1] == stationHours[1])){
 			return true;
 		}
 		return false;
@@ -274,9 +277,9 @@ public class Station{ // schedules employees by station, single day
 	public String toString(){
 		String ret = "";
 		ret += this.name + ":\n";
-		for(int i = 0; i < employeeWorking.size(); i++){
+		for(int i = 0; i < employeeWorkingIO.size(); i++){
 			ret += (i + 1) + ". ";
-			ret += employeeWorking.get(i).getNameLast() + ", " + employeeWorking.get(i).getNameFirst() + ": " + TimeConverter.converterToString(employeeWorking.get(i).hours[this.day][0]) + "-" + TimeConverter.converterToString(employeeWorking.get(i).hours[this.day][1]);
+			ret += employeeWorkingIO.get(i).getNameLast() + ", " + employeeWorkingIO.get(i).getNameFirst() + ": " + TimeConverter.converterToString(employeeWorkingIO.get(i).hours[this.day][0]) + "-" + TimeConverter.converterToString(employeeWorkingIO.get(i).hours[this.day][1]);
 			ret += "\n";
 		}
 		return ret;
