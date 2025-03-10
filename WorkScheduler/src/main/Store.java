@@ -44,7 +44,7 @@ public class Store{ //incorporates schedule made by stations, by day
 	// adds employees available on a certain day
 	private void setEmployeesAvailable(){ 
 		for(Employee employee: employeesAll){
-			if(employee.getAvailabilityDay(day)) Store.employeesAvailable.add(employee);
+			if(employee.getAvailabilityDay(day)) Store.employeesAvailable.addAvail(employee, 0);
 		}
 	}
 	

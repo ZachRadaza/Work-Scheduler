@@ -4,42 +4,53 @@ import java.util.ArrayList;
 
 public class ArrayEmpList{
 	
-	int day;
-	ArrayList<Employee> list;
+	private int day;
+	private ArrayList<Employee> list;
 	
 	public ArrayEmpList(int day){
 		this.day = day;
 		list = new ArrayList<>();
 	}
-	
-	public void add(Employee emp){
-		//if empty
-		if(list.isEmpty()) {
+	//adds in order of time of availability
+	public void addAvail(Employee emp, int i){
+		if(list.isEmpty()){
 			list.add(emp);
-			return;
-		}
-		
-		boolean found = false;
-		for(int i = 0; i < list.size(); i++){	
+		} else if(i >= list.size()){
+			list.add(emp);
+		} else {
 			if(emp.getAvailabilityHours(day, 0) < list.get(i).getAvailabilityHours(day, 0)){
 				list.add(i, emp);
-				found = true;
-				break;
-			}
-			if(emp.getAvailabilityHours(day, 0) == list.get(i).getAvailabilityHours(day, 0)){
+			} else if(emp.getAvailabilityHours(day, 0) == list.get(i).getAvailabilityHours(day, 0)){
 				if(emp.getAvailabilityHours(day, 1) >= list.get(i).getAvailabilityHours(day, 1)){
 					list.add(i, emp);
-					found = true;
-					break;
-				} else if (list.size() >= i+1 && emp.getAvailabilityHours(day, 0) != list.get(i + 1).getAvailabilityHours(day, 0)){
+				} else if ((list.size() > i+1) && (emp.getAvailabilityHours(day, 0) != list.get(i + 1).getAvailabilityHours(day, 0))){
 					list.add(i+1, emp);
-					found = true;
-					break;
 				}
+			} else {
+				addAvail(emp, i + 1);
 			}
 		}
-		//if the biggest
-		if(!found) list.add(emp);
+	}
+	
+	//adds in order of time of hours
+	public void addHours(Employee emp, int i){
+		if(list.isEmpty()){
+			list.add(emp);
+		} else if(i >= list.size()){
+			list.add(emp);
+		} else {
+			if(emp.hours[day][0] < list.get(i).hours[day][0]){
+				list.add(i, emp);
+			} else if(emp.hours[day][0] == list.get(i).hours[day][0]){
+				if(emp.hours[day][1] >= list.get(i).hours[day][1]){
+					list.add(i, emp);
+				} else if ((list.size() > i+1) && (emp.hours[day][0] != list.get(i + 1).hours[day][0])){
+					list.add(i+1, emp);
+				}
+			} else {
+				addHours(emp, i + 1);
+			}
+		}
 	}
 	
 	
