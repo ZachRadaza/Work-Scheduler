@@ -1,7 +1,11 @@
 package main;
 
+import display.MainFrame;
+
 public class Main{
 	public static void main(String[] args){
+		
+		new MainFrame();
 		
 		String filePathStation = "C:/Users/Asus/workspace/WorkScheduler/src/main/StoreExample.txt";
 		String filePathEmp = "C:/Users/Asus/workspace/WorkScheduler/src/main/EmployeeExample.txt";
@@ -10,6 +14,5 @@ public class Main{
 		
 		System.out.println(test1);
 		
-		// TODO: Bounds check everything
 	}
 }

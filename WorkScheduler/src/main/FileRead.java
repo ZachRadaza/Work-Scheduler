@@ -104,6 +104,10 @@ public class FileRead{
 			System.err.println("Problem finding file pookie sorry");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+		} catch(NumberFormatException e){
+			System.err.println("Incorrect inputs");
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
 		
 	}
@@ -168,6 +172,10 @@ public class FileRead{
 			fileRead.close();
 		} catch (FileNotFoundException e){
 			System.err.println("Sorry pookie file was not found :(");
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		}  catch(NumberFormatException e){
+			System.err.println("Incorrect inputs");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}

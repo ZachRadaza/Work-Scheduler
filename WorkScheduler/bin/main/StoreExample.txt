@@ -4,8 +4,8 @@ Name of Establishment~Pookie
 
 Name~Cold Stone
 ~Time~9:00-22:00
-~Busy Hours~11:00-13:00, 19:00-21:00
+~Busy Hours~11:00-13:00, 15:00-21:00
 ~Quiet Hours~13:00-17:00
 ~Minimum Number of Employees~1
-~Maximum Number of Employees~3
+~Maximum Number of Employees~2
 ~Efficient Number of Employees~2

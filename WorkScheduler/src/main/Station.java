@@ -174,7 +174,7 @@ public class Station{ // schedules employees by station, single day
 		}
 		if(numEmployees[1] != numEmployees[2]){
 			for(int i = 0; i < numEmployees[1]; i++){
-				//methods to meet max number of employees
+				schedEmp3();
 			}
 		}
 	}
@@ -241,11 +241,28 @@ public class Station{ // schedules employees by station, single day
 		hoursFill[hoursFill.length - 1][1] = stationHours[1];
 		
 		for(int i = 0; i < hoursFill.length; i++){
-			schedEmp2Helper(hoursFill[i][0], hoursFill[i][1]);
+			schedEmp23Helper(hoursFill[i][0], hoursFill[i][1]);
 		}
 	}
 	
-	private void schedEmp2Helper(float open, float close){
+	private void schedEmp3(){
+		int z = 0;
+		for(int i = 0; i < stationBusyHoursOpen.length; i++){
+			if(stationBusyHoursOpen[i] != -1f) z++;
+		}
+		
+		float[][] hoursFill = new float[z][2]; // hours we need to fill up
+		for(int i = 1; i < hoursFill.length; i++){
+			hoursFill[i][0] = stationBusyHoursOpen[i];
+			hoursFill[i][1] = stationBusyHoursClose[i];
+		}
+
+		for(int i = 0; i < hoursFill.length; i++){
+			schedEmp23Helper(hoursFill[i][0], hoursFill[i][1]);
+		}
+	}
+	
+	private void schedEmp23Helper(float open, float close){
 		if(schedEmpBaseCase(open, close)){
 			Station.indexScheduler = employeeWorking.size();
 			return;
@@ -267,6 +284,10 @@ public class Station{ // schedules employees by station, single day
 					}
 					if(employeeWorking.get(indexScheduler).hours[day][1] > close){
 						employeeWorking.get(indexScheduler).hours[day][1] = close;
+						if(employeeWorking.get(indexScheduler).hours[day][1] - employeeWorking.get(indexScheduler).hours[day][1] < 3){
+							employeeWorking.get(indexScheduler).hours[day][0] -= 1;
+						}
+						
 					}
 					employeeWorkingIO.addHours(employeeWorking.get(employeeWorking.size() - 1), 0); // adds to ordered employee
 					found = true;
@@ -274,7 +295,7 @@ public class Station{ // schedules employees by station, single day
 				}
 			}
 			if(!found) return;
-			schedEmp2Helper(open, close); //recursion
+			schedEmp23Helper(open, close); //recursion
 		} else {
 			if(!schedEmpHelper(1, open, close)){
 				if(!schedEmpHelper(2, open, close)) {
@@ -284,7 +305,7 @@ public class Station{ // schedules employees by station, single day
 					}
 				}
 			}
-			schedEmp2Helper(open, close); //recursion
+			schedEmp23Helper(open, close); //recursion
 		}
 	}
 	//checks base case possibilities
@@ -315,6 +336,9 @@ public class Station{ // schedules employees by station, single day
 					}
 					if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] > close){
 						employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = close;
+						if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] - employeeWorking.get(employeeWorking.size() - 1).hours[day][1] < 3){
+							employeeWorking.get(employeeWorking.size() - 1).hours[day][0] -= 1;
+						}
 					}
 					employeeWorkingIO.addHours(employeeWorking.get(employeeWorking.size() - 1), 0); // adds to ordered employee
 					found = true;
@@ -338,6 +362,9 @@ public class Station{ // schedules employees by station, single day
 						}
 						if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] > close){
 							employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = close;
+							if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] - employeeWorking.get(employeeWorking.size() - 1).hours[day][1] < 3){
+								employeeWorking.get(employeeWorking.size() - 1).hours[day][0] -= 1;
+							}
 						}
 						employeeWorkingIO.addHours(employeeWorking.get(employeeWorking.size() - 1), 0); // adds to ordered employee
 						found = true;
@@ -362,6 +389,9 @@ public class Station{ // schedules employees by station, single day
 						}
 						if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] > close){
 							employeeWorking.get(employeeWorking.size() - 1).hours[day][1] = close;
+							if(employeeWorking.get(employeeWorking.size() - 1).hours[day][1] - employeeWorking.get(employeeWorking.size() - 1).hours[day][1] < 3){
+								employeeWorking.get(employeeWorking.size() - 1).hours[day][0] -= 1;
+							}
 						}
 						employeeWorkingIO.addHours(employeeWorking.get(employeeWorking.size() - 1), 0); // adds to ordered employee
 						found = true;
@@ -391,6 +421,7 @@ public class Station{ // schedules employees by station, single day
 			ret += employeeWorkingIO.get(i).getNameLast() + ", " + employeeWorkingIO.get(i).getNameFirst() + ": " + TimeConverter.converterToString(employeeWorkingIO.get(i).hours[this.day][0]) + "-" + TimeConverter.converterToString(employeeWorkingIO.get(i).hours[this.day][1]);
 			ret += "\n";
 		}
+		
 		return ret;
 	}
 	

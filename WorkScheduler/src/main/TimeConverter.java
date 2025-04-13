@@ -6,37 +6,51 @@ public class TimeConverter{
 	
 	//converts 0:00 to 0.00
 	public static float converterToFloat(String time){
-		Scanner scanner = new Scanner(time);
-		float hour = 0;
-		float min = 0;
-		scanner.useDelimiter(":");
-		
-		String token = scanner.next().trim();
-		hour = Float.parseFloat(token);
-		
-		token = scanner.next().trim();
-		min = Float.parseFloat(token);
-		
-		min = minToDec(min);
-		
-		scanner.close();
-		
-		return hour + min;
+		try{
+			Scanner scanner = new Scanner(time);
+			float hour = 0;
+			float min = 0;
+			scanner.useDelimiter(":");
+			
+			String token = scanner.next().trim();
+			hour = Float.parseFloat(token);
+			
+			token = scanner.next().trim();
+			min = Float.parseFloat(token);
+			
+			min = minToDec(min);
+			
+			scanner.close();
+			
+			return hour + min;
+		} catch(NumberFormatException e){
+			System.err.println("Incorrect inputs");
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+			return 0f;
+		}
 	}
 	// converts Decimal to string
 	public static String converterToString(float time){
-		Integer hourInt = (int) time;
-		float minFloat = time - hourInt; //since java rounds down when int
-		
-		String hour = hourInt.toString();
-		String min = decToMin(minFloat);
-		if(hourInt <= 9){
-			hour = "0" + hour;
-		}
-		if(minFloat <= 0.09f){
-			min = "0" + min;
-		}
+		try{
+			Integer hourInt = (int) time;
+			float minFloat = time - hourInt; //since java rounds down when int
+			
+			String hour = hourInt.toString();
+			String min = decToMin(minFloat);
+			if(hourInt <= 9){
+				hour = "0" + hour;
+			}
+			if(minFloat <= 0.09f){
+				min = "0" + min;
+			}
 		return hour + ":" + min;
+		} catch(NumberFormatException e){
+			System.err.println("Incorrect inputs");
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	//converts the minute to decimals
