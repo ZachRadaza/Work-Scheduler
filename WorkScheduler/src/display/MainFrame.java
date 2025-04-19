@@ -1,23 +1,47 @@
 package display;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 
+import javax.swing.JPanel;
+
 //home screen
 public class MainFrame{
-	
+	//main frame being used
 	protected static Frame mainFrame;
 	
-	protected static Color darkBgColor = new Color(39, 48, 67);
-	protected static Color darkMidBgColor = new Color(79, 88, 107);
-	protected static Color midBgColor = new Color(175, 181, 204);
-	protected static Color brightBgColor = new Color(239, 246, 238);
+	protected static final Color darkBgColor = new Color(39, 48, 67);
+	protected static final Color darkMidBgColor = new Color(79, 88, 107);
+	protected static final Color midBgColor = new Color(175, 181, 204);
+	protected static final Color brightBgColor = new Color(239, 246, 238);
 	
+	private TaskBar taskBar;
+	//panels for the different pages
+	private static Home homePanel;
+	private static New newPanel;
+	private static Open openPanel;
+	private static Settings settingPanel;
+	private static About aboutPanel;
+	//holds the last/current panel being used, helps remove it for replacing the front
+	private static JPanel lastPanel;
 	
 	//main frame to use, holds all panels
 	public MainFrame(){
 		mainFrame = new Frame();
 		mainFrame.isVisible();
+		
+		mainFrame.getContentPane().setLayout(new BorderLayout());
+		
+		taskBar = new TaskBar();
+		mainFrame.add(taskBar, BorderLayout.WEST);
+
+		homePanel = new Home();
+		newPanel = new New();
+		openPanel = new Open();
+		settingPanel = new Settings();
+		aboutPanel = new About();
+		
 		startUp();
 		
 		mainFrame.revalidate();
@@ -27,8 +51,54 @@ public class MainFrame{
 		//listFonts();
 	}
 	
-	private void startUp(){
-		mainFrame.add(new Home());
+	protected void startUp(){
+		mainFrame.add(homePanel);
+		lastPanel = homePanel;
+	}
+	
+	protected static void openHomePanel(){
+		mainFrame.remove(lastPanel);
+		mainFrame.add(homePanel);
+		homePanel.isVisible();
+		homePanel.revalidate();
+		homePanel.repaint();
+		lastPanel = homePanel;
+	}
+	
+	protected static void openNewPanel(){
+		mainFrame.remove(lastPanel);
+		mainFrame.add(newPanel);
+		newPanel.isVisible();
+		newPanel.revalidate();
+		newPanel.repaint();
+		lastPanel = newPanel;
+	}
+	
+	protected static void openOpenPanel(){
+		mainFrame.remove(lastPanel);
+		mainFrame.add(openPanel);
+		openPanel.isVisible();
+		openPanel.revalidate();
+		openPanel.repaint();
+		lastPanel = openPanel;
+	}
+	
+	protected static void openSettingPanel(){
+		mainFrame.remove(lastPanel);
+		mainFrame.add(settingPanel);
+		settingPanel.isVisible();
+		settingPanel.revalidate();
+		settingPanel.repaint();
+		lastPanel = settingPanel;
+	}
+	
+	protected static void openAboutPanel(){
+		mainFrame.remove(lastPanel);
+		mainFrame.add(aboutPanel);
+		aboutPanel.isVisible();
+		aboutPanel.revalidate();
+		aboutPanel.repaint();
+		lastPanel = aboutPanel;
 	}
 	
 	private void listFonts(){
