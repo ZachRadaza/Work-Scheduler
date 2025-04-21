@@ -1,11 +1,6 @@
 package display;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-public class Open extends JPanel{
+public class Open extends Page{
 	
 	/**
 	 * 
@@ -14,10 +9,7 @@ public class Open extends JPanel{
 
 	//incorporates task bar at the left, templates, and recents. Follow word display
 	protected Open(){
-		this.setBackground(MainFrame.darkMidBgColor);
-		this.setLayout(new BorderLayout());
-		
-		this.add(new JLabel("Open"));
+		super("open");
 		
 		this.isVisible();
 		this.revalidate();

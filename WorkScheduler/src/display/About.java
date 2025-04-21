@@ -1,11 +1,6 @@
 package display;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-public class About extends JPanel{
+public class About extends Page{
 	
 	/**
 	 * 
@@ -14,10 +9,7 @@ public class About extends JPanel{
 
 	//incorporates task bar at the left, templates, and recents. Follow word display
 	protected About(){
-		this.setBackground(MainFrame.darkMidBgColor);
-		this.setLayout(new BorderLayout());
-		
-		this.add(new JLabel("About"));
+		super("about");
 		
 		this.isVisible();
 		this.revalidate();

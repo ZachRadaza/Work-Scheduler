@@ -25,6 +25,7 @@ public class MainFrame{
 	private static About aboutPanel;
 	//holds the last/current panel being used, helps remove it for replacing the front
 	private static JPanel lastPanel;
+	private static int lastPanelInt; // 0 is home, 4 is about, for which buttons to check when clicked
 	
 	//main frame to use, holds all panels
 	public MainFrame(){
@@ -54,6 +55,7 @@ public class MainFrame{
 	protected void startUp(){
 		mainFrame.add(homePanel);
 		lastPanel = homePanel;
+		lastPanelInt = 0;
 	}
 	
 	protected static void openHomePanel(){
@@ -63,6 +65,7 @@ public class MainFrame{
 		homePanel.revalidate();
 		homePanel.repaint();
 		lastPanel = homePanel;
+		lastPanelInt = 0;
 	}
 	
 	protected static void openNewPanel(){
@@ -72,6 +75,7 @@ public class MainFrame{
 		newPanel.revalidate();
 		newPanel.repaint();
 		lastPanel = newPanel;
+		lastPanelInt = 1;
 	}
 	
 	protected static void openOpenPanel(){
@@ -81,6 +85,7 @@ public class MainFrame{
 		openPanel.revalidate();
 		openPanel.repaint();
 		lastPanel = openPanel;
+		lastPanelInt = 2;
 	}
 	
 	protected static void openSettingPanel(){
@@ -90,6 +95,7 @@ public class MainFrame{
 		settingPanel.revalidate();
 		settingPanel.repaint();
 		lastPanel = settingPanel;
+		lastPanelInt = 3;
 	}
 	
 	protected static void openAboutPanel(){
@@ -99,6 +105,11 @@ public class MainFrame{
 		aboutPanel.revalidate();
 		aboutPanel.repaint();
 		lastPanel = aboutPanel;
+		lastPanelInt = 4;
+	}
+	
+	protected static int getLastPanelInt(){
+		return lastPanelInt;
 	}
 	
 	private void listFonts(){
