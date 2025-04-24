@@ -36,7 +36,7 @@ public class TaskBarButton extends JPanel implements MouseListener{
 		addMouseListener(this);
 		
 		main = new JPanel();//inner panel for inner border
-		borderSide = new MatteBorder(2, 2, 2, 2, MainFrame.darkBgColor);
+		borderSide = new MatteBorder(0, 2, 0, 0, MainFrame.darkBgColor);
 		
 		this.name = name;
 		this.filePath = filePath;

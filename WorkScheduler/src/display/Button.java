@@ -31,8 +31,6 @@ public class Button extends JPanel implements MouseListener{
 	
 	private MatteBorder underline;
 	
-	private boolean pressed;
-	
 	protected Button(String name, int width, int height, int fontSize, int buttonNumber, boolean photo, String filePath){
 		addMouseListener(this);
 		
@@ -99,7 +97,6 @@ public class Button extends JPanel implements MouseListener{
 	}
 	
 	private void unpress(){
-		pressed = false;
 		
 		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkMidBgColor);
 		mainPanel.setBorder(underline);
@@ -113,7 +110,6 @@ public class Button extends JPanel implements MouseListener{
 		// TODO Auto-generated method stub
 		System.out.println("1");
 		
-		pressed = true;
 		
 		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkBgColor);
 		mainPanel.setBorder(underline);
@@ -135,6 +131,8 @@ public class Button extends JPanel implements MouseListener{
 			case 4:
 				break;
 		}
+		
+		unpress();
 	}
 
 	@Override
@@ -142,7 +140,7 @@ public class Button extends JPanel implements MouseListener{
 		// TODO Auto-generated method stub
 		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkBgColor);
 		mainPanel.setBorder(underline);
-	
+		
 	}
 
 	@Override
