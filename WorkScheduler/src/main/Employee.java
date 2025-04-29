@@ -24,10 +24,9 @@ public class Employee{
 	
 	public float[][] hours; //final hours working, army time
 	
-	public Employee(String nameFirst, String nameLast, int idNumber, int numberOfStations, String stationsCanWorkRaw, String availSun, String availMon, String availTue, String availWed, String availThur, String availFri, String availSat){
+	public Employee(String nameFirst, String nameLast, int numberOfStations, String stationsCanWorkRaw, String availSun, String availMon, String availTue, String availWed, String availThur, String availFri, String availSat){
 		this.nameFirst = nameFirst;
 		this.nameLast = nameLast;
-		this.idNumber = idNumber;
 		
 		this.stationsCanWork = new String[8];
 		setStationsCanWork(stationsCanWorkRaw);

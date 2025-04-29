@@ -1,5 +1,6 @@
 package display;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -10,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
 public class Button extends JPanel implements MouseListener{
@@ -58,14 +60,15 @@ public class Button extends JPanel implements MouseListener{
 		mainPanel = new JPanel();
 		
 		mainPanel.setPreferredSize(new Dimension(this.width, this.height));
-		mainPanel.setBackground(MainFrame.darkMidBgColor);
+		mainPanel.setLayout(new BorderLayout());
+		mainPanel.setOpaque(false);
 		
 		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkMidBgColor);
 		mainPanel.setBorder(underline);
 		
 		setName();
 		
-		this.setBorder(BorderFactory.createEmptyBorder(0, 2, 2, 2));
+		this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		this.setBackground(MainFrame.darkMidBgColor);
 		
 	}
@@ -75,13 +78,9 @@ public class Button extends JPanel implements MouseListener{
 		
 		label.setFont(new Font("Microsoft JhengHei", Font.PLAIN, this.fontSize));
 		label.setForeground(MainFrame.brightBgColor);
-		label.setAlignmentX(CENTER_ALIGNMENT);
-		label.setAlignmentY(CENTER_ALIGNMENT);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		label.isVisible();
-		label.revalidate();
-		label.repaint();
-		mainPanel.add(label);
+		mainPanel.add(label, BorderLayout.CENTER);
 		
 		if(this.photo){
 			JLabel labelIcon = new JLabel();
@@ -89,10 +88,11 @@ public class Button extends JPanel implements MouseListener{
 			labelIcon.setAlignmentX(CENTER_ALIGNMENT);
 			labelIcon.setAlignmentY(CENTER_ALIGNMENT);
 			labelIcon.setOpaque(false);
-			labelIcon.isVisible();
+			labelIcon.setVisible(true);
 			labelIcon.revalidate();
 			labelIcon.repaint();
-			mainPanel.add(labelIcon);
+			mainPanel.add(labelIcon, BorderLayout.CENTER);
+			mainPanel.add(label, BorderLayout.SOUTH);
 		}
 	}
 	
@@ -138,17 +138,23 @@ public class Button extends JPanel implements MouseListener{
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkBgColor);
-		mainPanel.setBorder(underline);
-		
+		if(!photo){
+			underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkBgColor);
+			mainPanel.setBorder(underline);
+		} else {
+			this.setBorder(BorderFactory.createLineBorder(MainFrame.brightBgColor, 2, true));
+		}
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		underline = new MatteBorder(0, 0, 0, 0, MainFrame.darkMidBgColor);
-		mainPanel.setBorder(underline);
-	
+		if(!photo){
+			underline = new MatteBorder(0, 0, 0, 0, MainFrame.darkMidBgColor);
+			mainPanel.setBorder(underline);
+		} else {
+			this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		}
 	}
 
 	@Override

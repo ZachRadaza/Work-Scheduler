@@ -9,7 +9,7 @@ public class Store{ //incorporates schedule made by stations, by day
 	public ArrayList<Station> stations; //for a specific day, all stations
 	public static ArrayEmpList employeesAvailable;
 	private int day;
-	
+	//constructor for using template
 	public Store(int day, String filePathEmployee, String filePathStation){		
 		this.day = day;
 		
@@ -17,26 +17,37 @@ public class Store{ //incorporates schedule made by stations, by day
 		FileRead.readFileStore(filePathStation);
 		
 		employeesAll = new HashSet<>();
-		setEmployeesAll(filePathEmployee);
+		setEmployeesAll();
 		
 		employeesAvailable = new ArrayEmpList(day);
 		setEmployeesAvailable();
 		
 		stations = new ArrayList<>();
-		setStationsDay(filePathStation);
+		setStationsDay();
+	}
+	//constructor for manually added inputs
+	public Store(int day){
+		this.day = day;
+		
+		employeesAll = new HashSet<>();
+		setEmployeesAll();
+		
+		employeesAvailable = new ArrayEmpList(day);
+		setEmployeesAvailable();
+		
+		stations = new ArrayList<>();
+		setStationsDay();
 	}
 	
 	//helper methods
-	private void setEmployeesAll(String filePathEmployee){
-		//FileRead.readFileEmp(filePathEmployee);
+	private void setEmployeesAll(){
 		for(int i = 0; i < FileRead.getNumberOfEmp(); i++){
-			employeesAll.add(new Employee(FileRead.getEmpNameFirst(), FileRead.getEmpNameLast(), FileRead.getEmpIDNum(), FileRead.getNumberOfStations(), FileRead.getEmpStations(), FileRead.getEmpSunAvail(), FileRead.getEmpMonAvail(), FileRead.getEmpTueAvail(), FileRead.getEmpWedAvail(), FileRead.getEmpThurAvail(), FileRead.getEmpFriAvail(), FileRead.getEmpSatAvail()));
+			employeesAll.add(new Employee(FileRead.getEmpNameFirst(), FileRead.getEmpNameLast(), FileRead.getNumberOfStations(), FileRead.getEmpStations(), FileRead.getEmpSunAvail(), FileRead.getEmpMonAvail(), FileRead.getEmpTueAvail(), FileRead.getEmpWedAvail(), FileRead.getEmpThurAvail(), FileRead.getEmpFriAvail(), FileRead.getEmpSatAvail()));
 		}
 	}
 	
 	//sets station for specific day
-	private void setStationsDay(String filePathStation){
-		//FileRead.readFileStore(filePathStation);
+	private void setStationsDay(){
 		for(int i = 0; i < FileRead.getNumberOfStations(); i++){
 			stations.add(new Station(FileRead.getStationName(), day, FileRead.getTimeOpen(), FileRead.getTimeClose(), FileRead.getBusyHours(), FileRead.getQuietHours(), FileRead.getMinNumEmp(), FileRead.getMaxNumEmp(), FileRead.getEffNumEmp()));
 		}

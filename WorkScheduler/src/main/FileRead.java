@@ -22,7 +22,6 @@ public class FileRead{
 	//employee static fields
 	private static Queue<String> empNameFirst = new LinkedList<>();
 	private static Queue<String> empNameLast = new LinkedList<>();
-	private static Queue<Integer> empIDNum = new LinkedList<>();
 	
 	private static Queue<String> empSunAvail = new LinkedList<>();//string, will convert to time in employee
 	private static Queue<String> empMonAvail = new LinkedList<>();
@@ -130,10 +129,6 @@ public class FileRead{
 				token = fileRead.next().trim().toUpperCase();
 				empNameLast.add(token);
 				//adds to days
-				fileRead.next();
-				token = fileRead.next().trim();
-				int idNum = Integer.parseInt(token);
-				empIDNum.add(idNum);
 				
 				fileRead.next();
 				token = fileRead.next().trim();
@@ -271,14 +266,6 @@ public class FileRead{
 		}
 	}
 	
-	public static int getEmpIDNum(){
-		if(!empIDNum.isEmpty()){
-			return empIDNum.remove();
-		} else {
-			return -1;
-		}
-	}
-	
 	public static String getEmpSunAvail(){
 		if(!empSunAvail.isEmpty()){
 			return empSunAvail.remove();
@@ -345,5 +332,84 @@ public class FileRead{
 	
 	public static int getNumberOfEmp(){
 		return numberOfEmp;
+	}
+	
+	//setters
+	//store
+	public static void setStoreName(String name){
+		storeName = name;
+	}
+	
+	public static void addStationNames(String stationName){
+		stationNames.add(stationName);
+	}
+	
+	public static void addTimeOpen(Float time) {
+	    timeOpen.add(time);
+	}
+
+	public static void addTimeClose(Float time) {
+	    timeClose.add(time);
+	}
+
+	public static void addBusyHour(String hour) {
+	    busyHours.add(hour);
+	}
+
+	public static void addQuietHour(String hour) {
+	    quietHours.add(hour);
+	}
+
+	public static void addMinNumEmp(Integer num) {
+	    minNumEmp.add(num);
+	}
+
+	public static void addMaxNumEmp(Integer num) {
+	    maxNumEmp.add(num);
+	}
+
+	public static void addEffNumEmp(Integer num) {
+	    effNumEmp.add(num);
+	}
+	
+	//Employees
+	public static void addEmpNameFirst(String firstName) {
+	    empNameFirst.add(firstName);
+	}
+
+	public static void addEmpNameLast(String lastName) {
+	    empNameLast.add(lastName);
+	}
+
+	public static void addEmpSunAvail(String time) {
+	    empSunAvail.add(time);
+	}
+
+	public static void addEmpMonAvail(String time) {
+	    empMonAvail.add(time);
+	}
+
+	public static void addEmpTueAvail(String time) {
+	    empTueAvail.add(time);
+	}
+
+	public static void addEmpWedAvail(String time) {
+	    empWedAvail.add(time);
+	}
+
+	public static void addEmpThurAvail(String time) {
+	    empThurAvail.add(time);
+	}
+
+	public static void addEmpFriAvail(String time) {
+	    empFriAvail.add(time);
+	}
+
+	public static void addEmpSatAvail(String time) {
+	    empSatAvail.add(time);
+	}
+
+	public static void addEmpStation(String station) {
+	    empStations.add(station);
 	}
 }
