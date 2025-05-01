@@ -7,7 +7,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -17,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class New extends Page{
@@ -133,7 +137,7 @@ public class New extends Page{
 		//titleHolder.setBackground(MainFrame.darkBgColor);
 		titleHolder.add(title);
 		titleHolder.setOpaque(false);
-		titleHolder.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, MainFrame.darkBgColor));
+		titleHolder.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, MainFrame.brightBgColor));
 		
 		Dimension panelSize = titleHolder.getPreferredSize();
 		panelSize.width = 750;
@@ -208,11 +212,8 @@ public class New extends Page{
 		setHeader(0, "Create New Schedules");
 		panel0.add(panelHeader[0], BorderLayout.NORTH);
 		panelFooter[0] = new JPanel();
-		//adjusts width
+
 		panel0.add(panel0Center, BorderLayout.CENTER);
-		Dimension panel0Size = panel0.getPreferredSize();
-		panel0Size.width = 750;
-		panel0.setPreferredSize(panel0Size);
 		
 		panel0.setVisible(true);
 		panel0.revalidate();
@@ -241,8 +242,7 @@ public class New extends Page{
 		panelCreateAddButtonHome[n] = new JPanel();
 		panelCreateAddButtonHome[n].setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 		panelCreateAddButtonHome[n].setBackground(MainFrame.darkMidBgColor);
-		if(n == 0) buttonPanelCreate.get(n).add(new Button("+", 800, 150, 85, 2, false, ""));
-		else buttonPanelCreate.get(n).add(new Button("+", 800, 180, 85, 2, false, ""));
+		buttonPanelCreate.get(n).add(new Button("+", 800, 150, 85, 2, false, ""));
 		buttonPanelCreate.get(n).get(2).setForeground(MainFrame.brightBgColor);
 		buttonPanelCreate.get(n).get(2).setBorder(BorderFactory.createDashedBorder(null, 2f, 5f, 5f, true));
 		buttonPanelCreate.get(n).get(2).setVisible(true);
@@ -278,7 +278,7 @@ public class New extends Page{
 		panelAdd.setBackground(MainFrame.darkMidBgColor);
 		panelAdd.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panelAdd.setPreferredSize(new Dimension(800, 150));
-		panelAdd.setLayout(new GridLayout(4, 5, 5, 3));
+		panelAdd.setLayout(new GridBagLayout());
 		
 		//adding labels
 		String[] labelsName = {"Name:", "Station Hours:", "Minimum Number of Employees:", "Station Busy Hours:", "Maximum Number of Employess:", "Station Quiet Hours:", "Efficient Number of Employees:"};
@@ -291,49 +291,110 @@ public class New extends Page{
 
 		//adding text fields
 		JTextField[] textFields = new JTextField[labelsName.length];
+		String[] textFieldsHint = {"ex. Under The Hood", "ex. 11:00-22:00", "ex. 2", "ex. 12:00-14:00, 16:00-19:00", "ex. 4", "ex. 20:00-22:00", "ex. 3"};
 		for(int i = 0; i < textFields.length; i++){
-			textFields[i] = new JTextField(1);
+			textFields[i] = new HintTextField(textFieldsHint[i], 1);
+			textFields[i].setBackground(MainFrame.darkBgColor);
+			textFields[i].setForeground(MainFrame.brightBgColor);
+			textFields[i].setCaretColor(MainFrame.brightBgColor);
+			textFields[i].setFont(new Font("Microsoft JhengHei", Font.PLAIN, 14));
+			textFields[i].setBorder(BorderFactory.createMatteBorder(2, 10, 2, 2, MainFrame.darkBgColor));
+			//for numbers in number of employees
+			if(i % 2 == 0 && i != 0){
+				textFields[i].setHorizontalAlignment(SwingConstants.CENTER);
+				textFields[i].setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 2));
+			}
 		}
 		
 		panelStationsTextFields.add(textFields);
+		//for grid bag layout
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
 		//adding to grid
 		int labelsCount = 0;
 		int textFieldsCount = 0;
-		for(int i = 0; i < 20; i++){
-			switch(i){
-			case 4:
-				buttonPanelCreate.get(0).add(new Button("x", 50, 30, 15, buttonPanelCreate.get(0).size(), false, ""));
-				buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1).setVisible(true);
-				buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1).revalidate();
-				buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1).repaint();
-				panelAdd.add(buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1));
-				break;
-			case 0:
-			case 6:
-			case 8:
-			case 11:
-			case 13:
-			case 16:
-			case 18:
-				panelAdd.add(labels[labelsCount]);
-				labels[labelsCount].setVisible(true);
-				labelsCount++;
-				break;
-			case 1:
-			case 7:
-			case 9:
-			case 12:
-			case 14:
-			case 17:
-			case 19:
-				panelAdd.add(panelStationsTextFields.get(panelStationsTextFields.size() - 1)[textFieldsCount]);
-				panelStationsTextFields.get(panelStationsTextFields.size() - 1)[textFieldsCount].setVisible(true);
-				textFieldsCount++;
-				break;
-			default:
-				panelAdd.add(new JLabel());
-				break;
+		for(int i = 0; i < 4; i++){
+			for(int j = 0; j < 8; j++){
+				gbc.gridx = j;
+				gbc.gridy = i;
+				switch(i){
+					case 0:
+						switch(j){
+							case 0: //adds name
+								gbc.gridwidth = 1;
+								gbc.anchor = GridBagConstraints.EAST;
+								
+								panelAdd.add(labels[labelsCount], gbc);
+								labels[labelsCount].setVisible(true);
+								labelsCount++;
+								break;
+							case 1: //adds text field
+								gbc.gridwidth = 3;
+								gbc.anchor = GridBagConstraints.WEST;
+								
+								panelAdd.add(panelStationsTextFields.get(panelStationsTextFields.size() - 1)[textFieldsCount], gbc);
+								panelStationsTextFields.get(panelStationsTextFields.size() - 1)[textFieldsCount].setVisible(true);
+								textFieldsCount++;
+								break;
+							case 7: //delete button
+								gbc.gridwidth = 1;
+								gbc.anchor = GridBagConstraints.CENTER;
+								
+								buttonPanelCreate.get(0).add(new Button("x", 30, 30, 15, buttonPanelCreate.get(0).size(), false, ""));
+								buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1).setVisible(true);
+								buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1).revalidate();
+								buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1).repaint();
+								panelAdd.add(buttonPanelCreate.get(0).get(buttonPanelCreate.get(0).size() - 1));
+								break;
+							default:
+								gbc.gridwidth = 1;
+								
+								panelAdd.add(new JLabel(), gbc);
+								break;
+						}
+						break;
+
+					default:
+						switch(j){
+							case 1:
+							case 4: //texts
+								gbc.gridwidth = 1;
+								gbc.anchor = GridBagConstraints.WEST;
+								
+								panelAdd.add(labels[labelsCount], gbc);
+								labels[labelsCount].setVisible(true);
+								labelsCount++;
+								break;
+							case 2:
+							case 5: //text fields
+								gbc.gridwidth = 2;
+								gbc.anchor = GridBagConstraints.WEST;
+								
+								panelAdd.add(panelStationsTextFields.get(panelStationsTextFields.size() - 1)[textFieldsCount], gbc);
+								panelStationsTextFields.get(panelStationsTextFields.size() - 1)[textFieldsCount].setVisible(true);
+								textFieldsCount++;
+								break;
+							case 3: //to give text fields width enough for time
+								gbc.gridwidth = 1;
+								
+								panelAdd.add(new JLabel("AAAAAAAAAAAAAAAAAAAAAAAAAAA"), gbc);
+							case 6: //to give text fields width enough for three digit numbers
+								gbc.gridwidth = 1;
+								
+								panelAdd.add(new JLabel("1234567"), gbc);
+								break;
+							default: //empty
+								gbc.gridwidth = 1;
+								
+								panelAdd.add(new JLabel(), gbc);
+								break;
+						}
+						break;
+				}
 			}
 		}
 		
@@ -345,7 +406,7 @@ public class New extends Page{
 		panelAdd.setVisible(true);
 		panelAdd.revalidate();
 		panelAdd.repaint();
-		panel.isVisible();
+		panel.setVisible(true);
 		panel.revalidate();
 		panel.repaint();
 		
@@ -363,11 +424,11 @@ public class New extends Page{
 		JPanel panelAdd = new JPanel();
 		panelAdd.setBackground(MainFrame.darkMidBgColor);
 		panelAdd.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		panelAdd.setPreferredSize(new Dimension(800, 180));
-		panelAdd.setLayout(new GridLayout(6, 4, 5, 3));
+		panelAdd.setPreferredSize(new Dimension(800, 270));
+		panelAdd.setLayout(new GridBagLayout());
 		
 		//adding labels
-		String[] labelsName = {"First Name:", "Last Name:", "Stations Employee Can Work in:", "Sunday Availability:", "Monday Availability:", "Tuesday Availability:", "Wednesday Availability:", "Thursday Availability:", "Friday Availability:", "Saturday Availability:"};
+		String[] labelsName = {"Name:", "Stations:", "Sunday:", "Monday:", "Tuesday:", "Wednesday:", "Thursday:", "Friday:", "Saturday:"};
 		JLabel[] labels = new JLabel[labelsName.length];
 		for(int i = 0; i < labelsName.length; i++){
 			labels[i] = new JLabel(labelsName[i]);
@@ -376,57 +437,139 @@ public class New extends Page{
 		}		
 
 		//adding text fields
-		JTextField[] textFields = new JTextField[labelsName.length];
+		JTextField[] textFields = new JTextField[labelsName.length + 1];
+		String[] hints = {"Last Name, ex. Radaza", "First Name, ex. Zachary Juls", "Stations Employee can work in, ex. Under The Hood, Local Loaf", "ex. 10:30-17:00, 19:00-22:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00"};
 		for(int i = 0; i < textFields.length; i++){
-			textFields[i] = new JTextField(1);
+			textFields[i] = new HintTextField(hints[i], 1);
+			textFields[i].setBackground(MainFrame.darkBgColor);
+			textFields[i].setForeground(MainFrame.brightBgColor);
+			textFields[i].setCaretColor(MainFrame.brightBgColor);
+			textFields[i].setFont(new Font("Microsoft JhengHei", Font.PLAIN, 14));
+			textFields[i].setBorder(BorderFactory.createMatteBorder(2, 10, 2, 2, MainFrame.darkBgColor));
 		}
 		
 		panelEmpTextFields.add(textFields);
 		
+		//for grid bag layout
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		
 		//adding to grid
 		int labelsCount = 0;
 		int textFieldsCount = 0;
-		for(int i = 0; i < 24; i++){
-			switch(i){
-			case 23:
-				buttonPanelCreate.get(1).add(new Button("x", 50, 30, 15, buttonPanelCreate.get(1).size(), false, ""));
-				buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1).setVisible(true);
-				buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1).revalidate();
-				buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1).repaint();
-				panelAdd.add(buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1));
-				break;
-			case 0:
-			case 2:
-			case 4:
-			case 8:
-			case 10:
-			case 12:
-			case 14:
-			case 16:
-			case 18:
-			case 20:
-				panelAdd.add(labels[labelsCount]);
-				labels[labelsCount].setVisible(true);
-				labelsCount++;
-				break;
-			case 1:
-			case 3:
-			case 5:
-			case 9:
-			case 11:
-			case 13:
-			case 15:
-			case 17:
-			case 19:
-			case 21:
-				panelAdd.add(panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount]);
-				panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount].setVisible(true);
-				textFieldsCount++;		
-				break;
-			default:
-				panelAdd.add(new JLabel());
-				break;
+		for(int i = 0; i < 7; i++){
+			for(int j = 0; j < 8; j++){
+				gbc.gridx = j;
+				gbc.gridy = i;
+				switch(i){
+					case 0:
+						switch(j){
+							case 0: //adds name
+								gbc.gridwidth = 1;
+								
+								panelAdd.add(labels[labelsCount], gbc);
+								labels[labelsCount].setVisible(true);
+								labelsCount++;
+								break;
+							case 1:
+							case 4: //adds text field
+								gbc.gridwidth = 2;
+								
+								panelAdd.add(panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount], gbc);
+								panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount].setVisible(true);
+								textFieldsCount++;
+								break;
+							case 3: // adds comma for name
+								gbc.gridwidth = 1;
+								
+								JLabel comma = new JLabel(", ");
+								comma.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
+								comma.setForeground(MainFrame.brightBgColor);
+								panelAdd.add(comma, gbc);
+								break;
+							case 2:
+							case 5:
+								gbc.gridwidth = 1;
+								panelAdd.add(new JLabel("AAAAAAAAAAAAAAAAAAAAAAAAAAA"), gbc);
+								break;
+							case 7:
+								gbc.gridwidth = 1;
+								
+								buttonPanelCreate.get(1).add(new Button("x", 30, 30, 15, buttonPanelCreate.get(1).size(), false, ""));
+								buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1).setVisible(true);
+								buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1).revalidate();
+								buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1).repaint();
+								panelAdd.add(buttonPanelCreate.get(1).get(buttonPanelCreate.get(1).size() - 1), gbc);
+								break;
+							default:
+								panelAdd.add(new JLabel());
+								break;
+						}
+						break;
+					case 1:
+						switch(j){
+							case 1: //adds stations:
+								gbc.gridwidth = 1;
+								
+								panelAdd.add(labels[labelsCount], gbc);
+								labels[labelsCount].setVisible(true);
+								labelsCount++;
+								break;
+							case 2: //adds text field
+								gbc.gridwidth = 5;
+								
+								panelAdd.add(panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount], gbc);
+								panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount].setVisible(true);
+								textFieldsCount++;
+								break;
+							default:
+								panelAdd.add(new JLabel());
+								break;
+						}
+						break;
+					case 2: //adds availability string
+						if(j == 0){
+							gbc.gridwidth = 8;
+							JPanel panelAvail = new JPanel();
+							panelAvail.setOpaque(false);
+							panelAvail.setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, MainFrame.darkBgColor), "Availability", 2, 0, new Font("Microsoft JhengHei", Font.PLAIN, 15), MainFrame.brightBgColor));
+							panelAdd.add(panelAvail, gbc);
+						}
+						break;
+					default:
+						switch(j){
+							case 1:
+							case 4: //adds labels
+								if(labelsCount < labels.length){
+									gbc.gridwidth = 1;
+									
+									panelAdd.add(labels[labelsCount], gbc);
+									labels[labelsCount].setVisible(true);
+									labelsCount++;
+								}
+								break;
+							case 2:
+							case 5: //adds text fields
+								if(textFieldsCount < panelEmpTextFields.get(panelEmpTextFields.size() - 1).length){
+									gbc.gridwidth = 2;
+									
+									panelAdd.add(panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount], gbc);
+									panelEmpTextFields.get(panelEmpTextFields.size() - 1)[textFieldsCount].setVisible(true);
+									textFieldsCount++;
+								}
+								break;
+							default:
+								panelAdd.add(new JLabel());
+								break;
+						}
+						break;
+				}
+				
 			}
+			
 		}
 		
 		panelAdd.setVisible(true);
@@ -478,7 +621,7 @@ public class New extends Page{
 			for(int j = 0; j < panelEmpTextFields.get(i).length; j++){
 				temp[j] = panelEmpTextFields.get(i)[j].getText();
 			}
-			panelEmpData.add(new EmployeeData(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5], temp[6], temp[7], temp[8], temp[9]));
+			panelEmpData.add(new EmployeeData(temp[1], temp[0], temp[2], temp[3], temp[4], temp[5], temp[6], temp[7], temp[8], temp[9]));
 		}
 	}
 	//adds data into file read

@@ -150,7 +150,7 @@ public class Button extends JPanel implements MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		if(!photo){
-			underline = new MatteBorder(0, 0, 0, 0, MainFrame.darkMidBgColor);
+			underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkMidBgColor);
 			mainPanel.setBorder(underline);
 		} else {
 			this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
