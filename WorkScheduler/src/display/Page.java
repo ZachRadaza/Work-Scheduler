@@ -18,6 +18,7 @@ public class Page extends JPanel{
 	
 	private static Color bgColor = MainFrame.darkMidBgColor;
 	
+	//holds page of main display
 	protected Page(String title){
 		this.setBackground(bgColor);
 		this.setLayout(new BorderLayout());

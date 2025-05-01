@@ -2,6 +2,8 @@ package display;
 
 import main.FileRead;
 import main.Store;
+import resources.Button;
+import resources.HintTextField;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,6 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+
+import data.EmployeeData;
+import data.StationData;
 
 public class New extends Page{
 	
@@ -687,7 +692,7 @@ public class New extends Page{
 	}
 	
 	//evaluates which button was pressed
-	protected static void buttonPress(int buttonNumber){
+	public static void buttonPress(int buttonNumber){
 		//positive values for creating manually, negative for template use
 		if(panelLevel == 0){
 			panelLast.setVisible(false);

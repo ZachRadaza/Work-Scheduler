@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import resources.TaskBarButton;
+
 public class TaskBar extends JPanel{
 	
 	/**
@@ -38,12 +40,12 @@ public class TaskBar extends JPanel{
 		}
 	}
 	//checks if other buttons are pressed to give only one rectangle
-	protected static void buttonCheck(int n){
+	public static void buttonCheck(int n){
 		for(int i = 0; i < buttons.length; i++)	if(i != n) buttons[i].unPress();
 		
 	}
 	//checks which button was pressed, changes panels based on it
-	protected static void buttonPressed(int n){
+	public static void buttonPressed(int n){
 		switch(n){
 			case 0:
 				MainFrame.openHomePanel();

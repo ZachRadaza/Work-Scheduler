@@ -6,15 +6,17 @@ import java.awt.GraphicsEnvironment;
 
 import javax.swing.JPanel;
 
+import resources.Frame;
+
 //home screen
 public class MainFrame{
 	//main frame being used
 	protected static Frame mainFrame;
 	
-	protected static final Color darkBgColor = new Color(39, 48, 67);
-	protected static final Color darkMidBgColor = new Color(79, 88, 107);
-	protected static final Color midBgColor = new Color(175, 181, 204);
-	protected static final Color brightBgColor = new Color(239, 246, 238);
+	public static final Color darkBgColor = new Color(39, 48, 67);
+	public static final Color darkMidBgColor = new Color(79, 88, 107);
+	public static final Color midBgColor = new Color(175, 181, 204);
+	public static final Color brightBgColor = new Color(239, 246, 238);
 	
 	private TaskBar taskBar;
 	//panels for the different pages
@@ -108,7 +110,7 @@ public class MainFrame{
 		lastPanelInt = 4;
 	}
 	
-	protected static int getLastPanelInt(){
+	public static int getLastPanelInt(){
 		return lastPanelInt;
 	}
 	
