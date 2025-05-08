@@ -42,6 +42,7 @@ public class New extends Page{
 	private JScrollPane panelScroll;
 	
 	//panels on different steps on process
+	private static JPanel[] allPanels = new JPanel[5];
 	private static JPanel panel0 = new JPanel();
 	private static JPanel[] panelHeader = new JPanel[4];
 	private static JPanel[] panelFooter = new JPanel[4];
@@ -164,6 +165,7 @@ public class New extends Page{
 		panelFooter[i] = new JPanel();
 		panelFooter[i].setLayout(new BorderLayout());
 		panelFooter[i].setBackground(MainFrame.darkMidBgColor);
+		panelFooter[i].setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, MainFrame.brightBgColor));
 		
 		//sets up back button
 		buttons.add(setBackButton());
@@ -226,11 +228,13 @@ public class New extends Page{
 
 		panel0.add(panel0Center, BorderLayout.CENTER);
 		
+		allPanels[0] = panel0;
+		
 		panel0.setVisible(true);
 		panel0.revalidate();
 		panel0.repaint();
 	}
-	//TODO: add instrucitons for when there is only one day the schedule is wanted
+
 	private void setPanelCreate(int n){ // 0 = stations add panel, 1 = employee add panel
 		panelCreate[n] = new JPanel();
 		
@@ -273,6 +277,8 @@ public class New extends Page{
 		panelCreateAdd[n].repaint();
 		
 		panelCreate[n].add(panelCreateAdd[n], BorderLayout.CENTER);
+		
+		allPanels[n + 1] = panelCreate[n];
 		
 		panelCreate[n].setVisible(true);
 		panelCreate[n].revalidate();
@@ -709,8 +715,6 @@ public class New extends Page{
 			int maxNum = Integer.parseInt(panelStationsTextFields.get(i)[4].getText());
 			int effNum = Integer.parseInt(panelStationsTextFields.get(i)[6].getText());
 			panelStationsData.add(new StationData(name, timeOpen, timeClose, busyHours, quietHours, minNum, maxNum, effNum));
-			
-			System.out.println(quietHours);
 		}
 	}
 	//pushes panelEmp into panelEmpData
@@ -757,6 +761,8 @@ public class New extends Page{
 	
 	private void setPanelTemplate0(){
 		
+		allPanels[3] = panelTemplate0;
+		
 		panelTemplate0.setVisible(true);
 		panelTemplate0.revalidate();
 		panelTemplate0.repaint();
@@ -774,13 +780,17 @@ public class New extends Page{
 		
 		panelSchedule.add(panelSchedCenter, BorderLayout.CENTER);
 		
+		allPanels[4] = panelSchedule;
+		
 		panelSchedule.setVisible(true);
 		panelSchedule.revalidate();
 		panelSchedule.repaint();
 	}
-	
+	//TODO: Add created schedules to open
 	private static void createSchedule(int n){ //n = 0 is creating from scratch, n = 1 is using template
+		store = null;
 		store = new Store[days];
+		panelSchedDay = null;
 		panelSchedDay = new JPanel[days];
 		if(n == 0){
 			pushDataFileRead();
@@ -806,8 +816,11 @@ public class New extends Page{
 			//for template
 		}
 	}
+	//TODO: add download
 	//adds new schedule to already initialized panel
 	private static void panelScheduleAdd(){
+		panelSchedCenter.removeAll();
+		
 		panelSchedCenter.setLayout(new BoxLayout(panelSchedCenter, BoxLayout.Y_AXIS));
 		panelSchedCenter.setOpaque(false);
 		
@@ -840,42 +853,83 @@ public class New extends Page{
 	}
 	//adds employees to station
 	private static JPanel panelScheduleAddStations(int i, int j){
-		JPanel station = new JPanel();
-		station.setOpaque(false);
-		station.setLayout(new GridLayout((store[i].getStation(j).getEmployeeWorkingSize() / 2), 4, 0, 0)); // math done to get a table that has 2 emms and their schedule per row
-		station.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+		JPanel stationMain = new JPanel();
+		stationMain.setBackground(MainFrame.darkMidBgColor);
+		stationMain.setLayout(new BoxLayout(stationMain, BoxLayout.Y_AXIS));
 		
-		//for preferred size
-		Dimension dimension = station.getPreferredSize();
-		dimension.width = 750;
-		station.setPreferredSize(dimension);
+		//for the station title
+		JLabel stationName = new JLabel(store[i].getStation(j).getName().toUpperCase());
+		stationName.setFont(new Font("Microsoft JhengHei", Font.BOLD, 18));
+		stationName.setForeground(MainFrame.brightBgColor);
+		stationName.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		
+		JPanel stationNameHolder = new JPanel();
+		stationNameHolder.setBackground(MainFrame.darkBgColor);
+		stationNameHolder.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+		stationNameHolder.add(stationName);
 		
-		for(int k = 0; k < store[i].getStation(j).getEmployeeWorkingIOSize(); k++){
-			Font font = new Font("Microsoft JhengHei", Font.PLAIN, 15);
-			//for the name
-			String firstName = store[i].getStation(j).getEmployeeWorkingIO(k).getNameFirst();
-			String lastName = store[i].getStation(j).getEmployeeWorkingIO(k).getNameLast();
-			JLabel emp = new JLabel(lastName + ", " + firstName);
-			emp.setForeground(MainFrame.brightBgColor);
-			emp.setFont(font);
-			emp.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
-			station.add(emp);
-			//for the hours
-			String timeOpen = TimeConverter.converterToString(store[i].getStation(j).getEmployeeWorkingIO(k).hours[store[i].getDay()][0]);
-			String timeClose = TimeConverter.converterToString(store[i].getStation(j).getEmployeeWorkingIO(k).hours[store[i].getDay()][1]);
-			JLabel empHours = new JLabel(timeOpen + "-" + timeClose);
-			empHours.setForeground(MainFrame.brightBgColor);
-			empHours.setFont(font);
-			empHours.setHorizontalAlignment(SwingConstants.CENTER);
-			empHours.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
-			station.add(empHours);
+		//for the number of rows and columns on the table do to rounding down
+		int column = 4;
+		int rows = 0;
+		int numEmps = store[i].getStation(j).getEmployeeWorkingSize();
+		if((numEmps % 2) == 0) rows = numEmps / 2;
+		else  rows = (numEmps / 2) + 1;
+		
+		JPanel stationTable = new JPanel();
+		stationTable.setLayout(new GridLayout(rows, column, 0, 0));
+		stationTable.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+		stationTable.setBackground(MainFrame.darkMidBgColor);
+		
+		for(int k = 0; k < (rows * column) / 2; k++){
+			if(k < store[i].getStation(j).getEmployeeWorkingSize()){
+				Font font = new Font("Microsoft JhengHei", Font.PLAIN, 15);
+				//for the name
+				String firstName = store[i].getStation(j).getEmployeeWorkingIO(k).getNameFirst();
+				String lastName = store[i].getStation(j).getEmployeeWorkingIO(k).getNameLast();
+				JLabel emp = new JLabel("   " + lastName + ", " + firstName);
+				emp.setForeground(MainFrame.darkBgColor);
+				emp.setFont(font);
+				JPanel empHolder = new JPanel();
+				empHolder.setBackground(MainFrame.midBgColor);
+				empHolder.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+				empHolder.add(emp);
+				stationTable.add(empHolder);
+				//for the hours
+				String timeOpen = TimeConverter.converterToString(store[i].getStation(j).getEmployeeWorkingIO(k).hours[store[i].getDay()][0]);
+				String timeClose = TimeConverter.converterToString(store[i].getStation(j).getEmployeeWorkingIO(k).hours[store[i].getDay()][1]);
+				JLabel empHours = new JLabel(timeOpen + "-" + timeClose);
+				empHours.setForeground(MainFrame.brightBgColor);
+				empHours.setBackground(MainFrame.darkMidBgColor);
+				empHours.setFont(font);
+				empHours.setHorizontalAlignment(SwingConstants.CENTER);
+				empHours.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+				stationTable.add(empHours);
+			} else {//for extra space
+				JLabel[] extra = new JLabel[2];
+				for(int l = 0; l < extra.length; l++){
+					extra[l] = new JLabel();
+					extra[l].setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+					extra[l].setBackground(MainFrame.darkMidBgColor);
+					stationTable.add(extra[l]);
+				}
+			}
 		}
 		
-		station.setVisible(true);
-		station.revalidate();
-		station.repaint();
-		return station;
+		//for preferred size
+		Dimension dimensionN = stationNameHolder.getPreferredSize();
+		dimensionN.width = 750;
+		stationNameHolder.setPreferredSize(dimensionN);
+		stationMain.add(stationNameHolder);
+		
+		Dimension dimensionT = stationTable.getPreferredSize();
+		dimensionT.width = 750;
+		stationTable.setPreferredSize(dimensionT);
+		stationMain.add(stationTable);
+		
+		stationMain.setVisible(true);
+		stationMain.revalidate();
+		stationMain.repaint();
+		return stationMain;
 	}
 	
 	private Button setBackButton(){
@@ -884,16 +938,31 @@ public class New extends Page{
 		return button;
 	}
 	
+	private static void backPress(){
+		
+	}
+	
+	private static void nextPress(){
+		panelLevel++;
+		panelLast.setVisible(false);
+		panelMain.remove(panelLast);
+		panelMain.add(allPanels[panelLevel]);
+		panelLast = allPanels[panelLevel];
+		allPanels[panelLevel].setVisible(true);
+		allPanels[panelLevel].revalidate();
+		allPanels[panelLevel].repaint();
+	}
+	
 	//evaluates which button was pressed
 	public static void buttonPress(int buttonNumber){
-		//positive values for creating manually, negative for template use
+		//panel Level, manual is 1 and 2, template 3, schedule 4;
 		if(panelLevel == 0){
 			panelLast.setVisible(false);
 			panelMain.remove(panelLast);
 			if(buttonNumber < 2){ //sets days based on button pressed
 				days = 1;
 				//adds label for cleared instructions
-				JLabel instructions = new JLabel("*Only add availability of the desired day you want to schedule. Add 'n/a' to the rest ");
+				JLabel instructions = new JLabel("*Only add availability of the desired day you want to schedule.");
 				instructions.setForeground(MainFrame.brightBgColor);
 				instructions.setFont(new Font("Microsoft JhengHei", Font.ITALIC, 15));
 				

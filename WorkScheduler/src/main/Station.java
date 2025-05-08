@@ -15,12 +15,13 @@ public class Station{ // schedules employees by station, single day
 	private int day; // day of the week, 0 is Sunday, 6 is Saturday
 	private ArrayEmpList employeeWorkingIO; //employee working in order
 	private ArrayList<Employee> employeeWorking;
-	private static int indexScheduler = 0; //for managing layer starts, index of the start of new layer
+	private int indexScheduler; //for managing layer starts, index of the start of new layer
 	
 	public Station(String name, int day, float stationHoursOpen, float stationHoursClose, String stationBusyHoursString, String stationQuietHoursString, int numEmployeesMin, int numEmployeesMax, int numEmployeesBest){
 		this.name = name;
 		
 		this.day = day;
+		this.indexScheduler = 0;
 		
 		this.stationHours = new float[2];
 		this.stationHours[0] = stationHoursOpen;
@@ -197,7 +198,7 @@ public class Station{ // schedules employees by station, single day
 	private void schedEmp1(){
 		//checks if every hours has at least one employee
 		if(schedEmpBaseCase(stationHours[0], stationHours[1])){
-			Station.indexScheduler = employeeWorking.size();
+			indexScheduler = employeeWorking.size();
 			return;
 			//checks if empty for that layer, adds opening person
 		} else if(employeeWorking.size() == indexScheduler){
@@ -279,7 +280,7 @@ public class Station{ // schedules employees by station, single day
 	
 	private void schedEmp23Helper(float open, float close){
 		if(schedEmpBaseCase(open, close)){
-			Station.indexScheduler = employeeWorking.size();
+			indexScheduler = employeeWorking.size();
 			return;
 		}  else if(employeeWorking.size() == indexScheduler){
 			boolean found = false;
@@ -325,7 +326,7 @@ public class Station{ // schedules employees by station, single day
 	}
 	//checks base case possibilities
 	private boolean schedEmpBaseCase(float open, float close){
-		if(employeeWorking.size() == Station.indexScheduler){
+		if(employeeWorking.size() == indexScheduler){
 			return false;
 		} else if((employeeWorking.get(indexScheduler).hours[day][0] <= open) && (employeeWorking.get(employeeWorking.size() - 1).hours[day][1] >= close)){
 			return true;
