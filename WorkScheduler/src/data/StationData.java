@@ -18,6 +18,7 @@ public class StationData{
 		this.timeOpen = TimeConverter.converterToFloat(timeOpen);
 		this.timeClose = TimeConverter.converterToFloat(timeClose);
 		this.busyHours = busyHours;
+		this.quietHours = quietHours;
 		this.minNum = minNum;
 		this.maxNum = maxNum;
 		this.effNum = effNum;

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class Store{ //incorporates schedule made by stations, by day
 	
-	public HashSet<Employee> employeesAll;
-	public ArrayList<Station> stations; //for a specific day, all stations
+	private HashSet<Employee> employeesAll;
+	private ArrayList<Station> stations; //for a specific day, all stations
 	public static ArrayEmpList employeesAvailable;
 	private int day;
 	//constructor for using template
@@ -64,10 +64,12 @@ public class Store{ //incorporates schedule made by stations, by day
 		return this.day;
 	}
 	
-	public String getStation(int i){
-		String test  = "";
-		test += "name:" + stations.get(i).getName();
-		return test;
+	public Station getStation(int i){
+		return stations.get(i);
+	}
+	
+	public int getStationSize(){
+		return stations.size();
 	}
 	//TODO:
 	public String toString(){

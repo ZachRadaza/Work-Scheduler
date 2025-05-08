@@ -340,6 +340,10 @@ public class FileRead{
 		storeName = name;
 	}
 	
+	public static void setNumberStations(int n){
+		numberOfStations = n;
+	}
+	
 	public static void addStationNames(String stationName){
 		stationNames.add(stationName);
 	}
@@ -373,6 +377,10 @@ public class FileRead{
 	}
 	
 	//Employees
+	public static void setNumberEmp(int n){
+		numberOfEmp = n;
+	}
+	
 	public static void addEmpNameFirst(String firstName) {
 	    empNameFirst.add(firstName);
 	}

@@ -49,14 +49,14 @@ public class Station{ // schedules employees by station, single day
 	//methods to help object creations, setters
 	
 	//sets raw string into float time data for busy hours
-	private void setStationBusyHours(String stationQuietHoursString){
+	private void setStationBusyHours(String stationBusyHoursString){
 		
 		for(int j = 0; j < stationBusyHoursOpen.length; j++){
 			stationBusyHoursOpen[j] = -1f;
 			stationBusyHoursClose[j] = -1f;
 		}
 		
-		Scanner scannerTW = new Scanner(stationQuietHoursString);//scanner for time windows
+		Scanner scannerTW = new Scanner(stationBusyHoursString);//scanner for time windows
 		scannerTW.useDelimiter(","); //scanner for separate time windows
 		int i = 0;
 		while(scannerTW.hasNext()){
@@ -98,18 +98,17 @@ public class Station{ // schedules employees by station, single day
 		scannerTW.close();
 	}
 	//sets quiet hours
-	private void setStationQuietHours(String stationBusyHoursString){
-		
+	private void setStationQuietHours(String stationQuietHoursString){
 		for(int j = 0; j < stationBusyHoursOpen.length; j++){
 			stationQuietHoursOpen[j] = -1f;
 			stationQuietHoursClose[j] = -1f;
 		}
 		
-		Scanner scannerTW = new Scanner(stationBusyHoursString);//scanner for time windows
+		Scanner scannerTW = new Scanner(stationQuietHoursString);//scanner for time windows
 		scannerTW.useDelimiter(","); //scanner for separate time windows
 		int i = 0;
 		while(scannerTW.hasNext()){
-			if(i == stationBusyHoursOpen.length){ //if it needs more space
+			if(i == stationQuietHoursOpen.length){ //if it needs more space
 				float[] tempOpen = new float[stationQuietHoursOpen.length];
 				float[] tempClose = new float[stationQuietHoursClose.length];
 				
@@ -121,7 +120,7 @@ public class Station{ // schedules employees by station, single day
 				stationQuietHoursOpen = new float[stationQuietHoursOpen.length * 2];
 				stationQuietHoursClose = new float[stationQuietHoursClose.length * 2];
 				
-				for(int j = 0; j < stationBusyHoursOpen.length; j++){
+				for(int j = 0; j < stationQuietHoursOpen.length; j++){
 					stationQuietHoursOpen[j] = -1f;
 					stationQuietHoursClose[j] = -1f;
 				}
@@ -160,11 +159,27 @@ public class Station{ // schedules employees by station, single day
 		return employeeWorking.get(i);
 	}
 	
+	public int getEmployeeWorkingSize(){
+		return employeeWorking.size();
+	}
+	
+	public Employee getEmployeeWorkingIO(int i){
+		return employeeWorkingIO.get(i);
+	}
+	
+	public int getEmployeeWorkingIOSize(){
+		return employeeWorkingIO.size();
+	}
+	
 	//methods to create schedule
 	public void schedEmp(){
 		if(employeeWorking.isEmpty()){
 			for(int i = 0; i < numEmployees[0]; i++){
 				schedEmp1();
+			}
+			if(stationQuietHoursOpen[0] == 0 && stationQuietHoursClose[0] == 0){
+				stationQuietHoursOpen[0] = stationHours[0];
+				stationQuietHoursClose[0] = stationHours[1];
 			}
 		}
 		if((numEmployees[2] != numEmployees[0]) && (stationQuietHoursOpen[0] != 0) && (stationQuietHoursClose[0] != 0)){

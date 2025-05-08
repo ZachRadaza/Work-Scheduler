@@ -2,11 +2,11 @@ package display;
 
 import main.FileRead;
 import main.Store;
+import main.TimeConverter;
 import resources.Button;
 import resources.HintTextField;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -15,10 +15,12 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -41,10 +43,10 @@ public class New extends Page{
 	
 	//panels on different steps on process
 	private static JPanel panel0 = new JPanel();
-	private static JPanel[] panelHeader = new JPanel[3];
-	private static JPanel[] panelFooter = new JPanel[3];
+	private static JPanel[] panelHeader = new JPanel[4];
+	private static JPanel[] panelFooter = new JPanel[4];
 	private static JPanel[] panelCreate = new JPanel[2]; //0 and 1
-	public static JPanel panelCreate2 = new JPanel();
+	public static JPanel panelSchedule = new JPanel();
 	private static JPanel panelTemplate0 = new JPanel();
 	
 	//which panel we are currently at
@@ -56,8 +58,6 @@ public class New extends Page{
 	//fields needed for each steps
 	//for panel 0
 	private static int days = 0; //number of days to schedule
-	
-	//for panel 0
 	private static JPanel[] panel0Board = new JPanel[3];
 	private static JPanel[] panel0BoardHome = new JPanel[3];
 	private static JPanel panel0Center = new JPanel();
@@ -70,10 +70,16 @@ public class New extends Page{
 	private static ArrayList<JTextField[]> panelEmpTextFields = new ArrayList<>();
 	private static JPanel[] panelCreateAdd = new JPanel[2];
 	private static JPanel[] panelCreateAddButtonHome = new JPanel[2];
+	private static JPanel panelCreateIns = new JPanel(); //holder for instruction label
+	//for panel schedule
+	private static Store[] store;
+	private static JPanel panelSchedCenter = new JPanel();
+	private static JPanel[] panelSchedDay;
 	
 	//buttons
 	private Button[] buttonPanel0 = new Button[6];
 	private static ArrayList<LinkedList<Button>> buttonPanelCreate = new ArrayList<>();
+	private static LinkedList<Button> buttonPanelSchedule = new LinkedList<>();
 	
 	//incorporates task bar at the left, templates, and recents. Follow word display
 	protected New(){
@@ -127,7 +133,7 @@ public class New extends Page{
 		setPanel1();
 		setPanelCreate(0);
 		setPanelCreate(1);
-		setPanelCreate2();
+		setPanelSchedule();
 		setPanelTemplate0();
 	}
 	
@@ -224,8 +230,8 @@ public class New extends Page{
 		panel0.revalidate();
 		panel0.repaint();
 	}
-	
-	private void setPanelCreate(int n){ // 0 = stations add panel, 2 = employee add panel
+	//TODO: add instrucitons for when there is only one day the schedule is wanted
+	private void setPanelCreate(int n){ // 0 = stations add panel, 1 = employee add panel
 		panelCreate[n] = new JPanel();
 		
 		panelCreate[n].setLayout(new BorderLayout());
@@ -247,7 +253,7 @@ public class New extends Page{
 		panelCreateAddButtonHome[n] = new JPanel();
 		panelCreateAddButtonHome[n].setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 		panelCreateAddButtonHome[n].setBackground(MainFrame.darkMidBgColor);
-		buttonPanelCreate.get(n).add(new Button("+", 800, 150, 85, 2, false, ""));
+		buttonPanelCreate.get(n).add(new Button("+", 780, 150, 85, 2, false, ""));
 		buttonPanelCreate.get(n).get(2).setForeground(MainFrame.brightBgColor);
 		buttonPanelCreate.get(n).get(2).setBorder(BorderFactory.createDashedBorder(null, 2f, 5f, 5f, true));
 		buttonPanelCreate.get(n).get(2).setVisible(true);
@@ -282,7 +288,7 @@ public class New extends Page{
 		JPanel panelAdd = new JPanel();
 		panelAdd.setBackground(MainFrame.darkMidBgColor);
 		panelAdd.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		panelAdd.setPreferredSize(new Dimension(800, 150));
+		panelAdd.setPreferredSize(new Dimension(780, 150));
 		panelAdd.setLayout(new GridBagLayout());
 		
 		//adding labels
@@ -429,7 +435,7 @@ public class New extends Page{
 		JPanel panelAdd = new JPanel();
 		panelAdd.setBackground(MainFrame.darkMidBgColor);
 		panelAdd.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		panelAdd.setPreferredSize(new Dimension(800, 270));
+		panelAdd.setPreferredSize(new Dimension(780, 270));
 		panelAdd.setLayout(new GridBagLayout());
 		
 		//adding labels
@@ -443,7 +449,7 @@ public class New extends Page{
 
 		//adding text fields
 		JTextField[] textFields = new JTextField[labelsName.length + 1];
-		String[] hints = {"Last Name, ex. Radaza", "First Name, ex. Zachary Juls", "Stations Employee can work in, ex. Under The Hood, Local Loaf", "ex. 10:30-17:00, 19:00-22:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00"};
+		String[] hints = {"Last Name, ex. Radaza", "First Name, ex. Zachary Juls", "Stations Employee can work in, ex. Under The Hood, Local Loaf", "ex. 10:30-17:00, 19:00-22:00", "ex. 10:30-17:00", "ex. n/a", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00", "ex. 10:30-17:00"};
 		for(int i = 0; i < textFields.length; i++){
 			textFields[i] = new HintTextField(hints[i], 1);
 			textFields[i].setBackground(MainFrame.darkBgColor);
@@ -596,11 +602,91 @@ public class New extends Page{
 	
 	//validates that inputs in text fields are valid
 	private static boolean panelStationsValidate(){
-		return false;
+		boolean ret = true;
+		for(int i = 0; i < panelStationsTextFields.size(); i++){
+			String[] temp = new String[panelStationsTextFields.get(i).length];
+			
+			for(int j = 0; j < panelStationsTextFields.get(i).length; j++){
+				temp[j] = panelStationsTextFields.get(i)[j].getText().trim();
+				if(j % 2 != 0){
+					if(temp[j].trim().toLowerCase().equals("n/a") || temp[j].trim().equals("")) {
+						panelStationsTextFields.get(i)[j].setText("0:00-0:00");
+						temp[j] = "0:00-0:00";
+					}
+					if(!TimeConverter.validateString(temp[j])){
+						ret = false;
+						break;
+					}
+				} else if(temp[j].equals("")){
+					ret = false;
+					break;
+				}
+			}
+		}
+		return ret;
 	}
 	
 	private static boolean panelEmpValidate(){
-		return false;
+		boolean ret = true;
+		for(int i = 0; i < panelEmpTextFields.size(); i++){
+			String[] temp = new String[panelEmpTextFields.get(i).length];
+			
+			for(int j = 0; j < panelEmpTextFields.get(i).length; j++){
+				temp[j] = panelEmpTextFields.get(i)[j].getText().trim();
+				
+				if(j < 2 && temp[j].equals("")){//validates names and makes sure they are not empty
+					ret = false;
+					break;
+				} else if(j == 2){ //validates stations
+					Scanner scanner = new Scanner(temp[j]);
+					scanner.useDelimiter(",");
+					String token = "";
+					//checks each input of stations
+					while(scanner.hasNext()){
+						token = scanner.next().trim();
+						
+						for(int k = 0; k < panelStationsData.size(); k++){
+							if(!(token.toLowerCase().equals(panelStationsData.get(k).getname().toLowerCase()))){
+								ret = false;
+								break;
+							}
+						}
+					}
+					scanner.close();
+				} else if (j > 2){ //validates availability times
+					if(temp[j].toLowerCase().equals("n/a") || temp[j].trim().equals("")) {
+						panelEmpTextFields.get(i)[j].setText("0:00-0:00");
+						temp[j] = "0:00-0:00";
+					}
+					if(!TimeConverter.validateString(temp[j])){
+						ret = false;
+						break;
+					}
+				}
+			}
+		}
+		return ret;
+	}
+	
+	//pop ups that appear if information was not inputed properly
+	private static boolean panelStationsValidatePopUp(){
+		if(!panelStationsValidate()){
+			JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Station's Data", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		} else {
+			pushPanelStationsData();
+			return true;
+		}
+	}
+	
+	private static boolean panelEmpValidatePopUp(){
+		if(!panelEmpValidate()){
+			JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Employee's Data", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		} else {
+			pushPanelEmpData();
+			return true;
+		}
 	}
 	
 	//pushes panelStations into panelStationsData
@@ -608,14 +694,23 @@ public class New extends Page{
 		for(int i = 0; i < panelStationsTextFields.size(); i++){
 			//for easier input
 			String name = panelStationsTextFields.get(i)[0].getText();
-			String timeOpen = panelStationsTextFields.get(i)[1].getText();
-			String timeClose = panelStationsTextFields.get(i)[2].getText();
+			//separates time due to my incompetence in consistency
+			Scanner separate = new Scanner(panelStationsTextFields.get(i)[1].getText());
+			separate.useDelimiter("-");
+			String token = separate.next().trim();
+			String timeOpen = token;
+			token = separate.next().trim();
+			String timeClose = token;
+			separate.close();
+			
 			String busyHours = panelStationsTextFields.get(i)[3].getText();
-			String quietHours = panelStationsTextFields.get(i)[4].getText();
-			int minNum = Integer.parseInt(panelStationsTextFields.get(i)[5].getText());
-			int maxNum = Integer.parseInt(panelStationsTextFields.get(i)[6].getText());
-			int effNum = Integer.parseInt(panelStationsTextFields.get(i)[7].getText());
+			String quietHours = panelStationsTextFields.get(i)[5].getText();
+			int minNum = Integer.parseInt(panelStationsTextFields.get(i)[2].getText());
+			int maxNum = Integer.parseInt(panelStationsTextFields.get(i)[4].getText());
+			int effNum = Integer.parseInt(panelStationsTextFields.get(i)[6].getText());
 			panelStationsData.add(new StationData(name, timeOpen, timeClose, busyHours, quietHours, minNum, maxNum, effNum));
+			
+			System.out.println(quietHours);
 		}
 	}
 	//pushes panelEmp into panelEmpData
@@ -631,9 +726,11 @@ public class New extends Page{
 	}
 	//adds data into file read
 	private static void pushDataFileRead(){
-		pushPanelStationsData();
-		pushPanelEmpData();
+		//pushPanelStationsData();
+		//pushPanelEmpData();
 		FileRead.setStoreName("test");
+		FileRead.setNumberStations(panelStationsData.size());
+		FileRead.setNumberEmp(panelEmpData.size());
 		for(int i = 0; i < panelStationsData.size(); i++){
 			FileRead.addStationNames(panelStationsData.get(i).getname());
 			FileRead.addTimeOpen(panelStationsData.get(i).getTimeOpen());
@@ -658,31 +755,127 @@ public class New extends Page{
 		}
 	}
 	
-	private static void createSchedule(int n){ //n = 0 is creating from scratch, n = 1 is using template
-		if(n == 0){
-			Store[] store = new Store[7];
-			for(int i = 0; i < 7; i++){
-				pushDataFileRead();
-				store[i] = new Store(i);
-			}
-		} else{
-			
-		}
-	}
-	
-	private void setPanelCreate2(){
-		panelCreate2.setBackground(MainFrame.darkMidBgColor);
-		
-		panelCreate2.setVisible(true);
-		panelCreate2.revalidate();
-		panelCreate2.repaint();
-	}
-	
 	private void setPanelTemplate0(){
 		
 		panelTemplate0.setVisible(true);
 		panelTemplate0.revalidate();
 		panelTemplate0.repaint();
+	}
+	
+	private void setPanelSchedule(){
+		panelSchedule.setBackground(MainFrame.darkMidBgColor);
+		panelSchedule.setLayout(new BorderLayout());
+		
+		setHeader(3, "Created Schedule");
+		panelSchedule.add(panelHeader[3], BorderLayout.NORTH);
+		
+		setFooter(3, buttonPanelSchedule);
+		panelSchedule.add(panelFooter[3], BorderLayout.SOUTH);
+		
+		panelSchedule.add(panelSchedCenter, BorderLayout.CENTER);
+		
+		panelSchedule.setVisible(true);
+		panelSchedule.revalidate();
+		panelSchedule.repaint();
+	}
+	
+	private static void createSchedule(int n){ //n = 0 is creating from scratch, n = 1 is using template
+		store = new Store[days];
+		panelSchedDay = new JPanel[days];
+		if(n == 0){
+			pushDataFileRead();
+			if(days == 1){ //checks which day the single schedule is wanted through checking availability
+				String[] availString = {panelEmpData.get(0).getAvailSun(), panelEmpData.get(0).getAvailMon(), panelEmpData.get(0).getAvailTue(), panelEmpData.get(0).getAvailWed(), panelEmpData.get(0).getAvailThur(), panelEmpData.get(0).getAvailFri(), panelEmpData.get(0).getAvailSat()};
+				int index = 0;
+				for(int i = 0; i < 7; i++){
+					if(!availString[i].toLowerCase().equals("0:00-0:00")){
+						index = i;
+						break;
+					}
+				}
+				store[0] = new Store(index);
+			} else if(days == 5){
+				for(int i = 1; i <= 5; i++) //adjusted for starting at Monday's
+					store[i - 1] = new Store(i);
+			} else{
+				for(int i = 0; i < store.length; i++){
+					store[i] = new Store(i);
+				}
+			}
+		} else {
+			//for template
+		}
+	}
+	//adds new schedule to already initialized panel
+	private static void panelScheduleAdd(){
+		panelSchedCenter.setLayout(new BoxLayout(panelSchedCenter, BoxLayout.Y_AXIS));
+		panelSchedCenter.setOpaque(false);
+		
+		for(int i = 0; i < store.length; i++){
+			panelScheduleAddHelper(i);
+			panelSchedCenter.add(panelSchedDay[i]);
+		}
+		
+		panelSchedCenter.setVisible(true);
+		panelSchedCenter.revalidate();
+		panelSchedCenter.repaint();
+		
+	}
+	//adds a panel for the day with stations and employees
+	private static void panelScheduleAddHelper(int i){
+		panelSchedDay[i] = new JPanel();
+		
+		String[] dayString = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+		panelSchedDay[i].setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(MainFrame.brightBgColor, 2, true), dayString[store[i].getDay()], 2, 0, new Font("Microsoft JhengHei", Font.PLAIN, 20), MainFrame.brightBgColor));
+		panelSchedDay[i].setLayout(new BoxLayout(panelSchedDay[i], BoxLayout.Y_AXIS));
+		panelSchedDay[i].setOpaque(false);
+		
+		for(int j = 0; j < store[i].getStationSize(); j++){
+			panelSchedDay[i].add(panelScheduleAddStations(i, j));
+		}
+		
+		panelSchedDay[i].setVisible(true);
+		panelSchedDay[i].revalidate();
+		panelSchedDay[i].repaint();
+	}
+	//adds employees to station
+	private static JPanel panelScheduleAddStations(int i, int j){
+		JPanel station = new JPanel();
+		station.setOpaque(false);
+		station.setLayout(new GridLayout((store[i].getStation(j).getEmployeeWorkingSize() / 2), 4, 0, 0)); // math done to get a table that has 2 emms and their schedule per row
+		station.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+		
+		//for preferred size
+		Dimension dimension = station.getPreferredSize();
+		dimension.width = 750;
+		station.setPreferredSize(dimension);
+		
+		
+		for(int k = 0; k < store[i].getStation(j).getEmployeeWorkingIOSize(); k++){
+			Font font = new Font("Microsoft JhengHei", Font.PLAIN, 15);
+			//for the name
+			String firstName = store[i].getStation(j).getEmployeeWorkingIO(k).getNameFirst();
+			String lastName = store[i].getStation(j).getEmployeeWorkingIO(k).getNameLast();
+			JLabel emp = new JLabel(lastName + ", " + firstName);
+			emp.setForeground(MainFrame.brightBgColor);
+			emp.setFont(font);
+			emp.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+			station.add(emp);
+			//for the hours
+			String timeOpen = TimeConverter.converterToString(store[i].getStation(j).getEmployeeWorkingIO(k).hours[store[i].getDay()][0]);
+			String timeClose = TimeConverter.converterToString(store[i].getStation(j).getEmployeeWorkingIO(k).hours[store[i].getDay()][1]);
+			JLabel empHours = new JLabel(timeOpen + "-" + timeClose);
+			empHours.setForeground(MainFrame.brightBgColor);
+			empHours.setFont(font);
+			empHours.setHorizontalAlignment(SwingConstants.CENTER);
+			empHours.setBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 1));
+			station.add(empHours);
+		}
+		
+		station.setVisible(true);
+		station.revalidate();
+		station.repaint();
+		return station;
 	}
 	
 	private Button setBackButton(){
@@ -699,9 +892,24 @@ public class New extends Page{
 			panelMain.remove(panelLast);
 			if(buttonNumber < 2){ //sets days based on button pressed
 				days = 1;
+				//adds label for cleared instructions
+				JLabel instructions = new JLabel("*Only add availability of the desired day you want to schedule. Add 'n/a' to the rest ");
+				instructions.setForeground(MainFrame.brightBgColor);
+				instructions.setFont(new Font("Microsoft JhengHei", Font.ITALIC, 15));
+				
+				panelCreateIns.setPreferredSize(new Dimension(800, 25));
+				panelCreateIns.setOpaque(false);
+				panelCreateIns.add(instructions);
+				panelCreateIns.setVisible(true);
+				panelCreateIns.revalidate();
+				panelCreateIns.repaint();
+				panelCreateAdd[1].add(panelCreateIns, 0);
+				
 			} else if(buttonNumber < 4){
+				if(panelCreateAdd[1].getComponent(0).equals(panelCreateIns)) panelCreateAdd[1].remove(0); //for when they back
 				days = 7;
 			} else {
+				if(panelCreateAdd[1].getComponent(0).equals(panelCreateIns)) panelCreateAdd[1].remove(0); //for when they back
 				days = 5;
 			}
 			if(buttonNumber % 2 == 0) { //for panel create pressed
@@ -719,7 +927,7 @@ public class New extends Page{
 				panelTemplate0.revalidate();
 				panelTemplate0.repaint();
 			}
-		} else if(panelLevel == 1){
+		} else if(panelLevel == 1){ //station add screen
 			if(buttonNumber == 0){//back button
 				panelLast.setVisible(false);
 				panelMain.remove(panelLast);
@@ -751,7 +959,7 @@ public class New extends Page{
 				panelCreateAdd[0].revalidate();
 				panelCreateAdd[0].repaint();
 			}
-		} else if(panelLevel == 2){
+		} else if(panelLevel == 2){ //employee add screen
 			if(buttonNumber == 0){//back button
 				panelLast.setVisible(false);
 				panelMain.remove(panelLast);
@@ -762,14 +970,22 @@ public class New extends Page{
 				panelCreate[0].revalidate();
 				panelCreate[0].repaint();
 			} else if(buttonNumber == 1){ //next button
-				panelLast.setVisible(false);
-				panelMain.remove(panelLast);
-				panelMain.add(panelCreate2);
-				panelLast = panelCreate2;
-				panelLevel++;
-				panelCreate2.setVisible(true);
-				panelCreate2.revalidate();
-				panelCreate2.repaint();
+				if(panelStationsValidatePopUp()){
+					if(panelEmpValidatePopUp()){
+						//creates schedule and adds it into panel
+						createSchedule(0);
+						panelScheduleAdd();
+						
+						panelLast.setVisible(false);
+						panelMain.remove(panelLast);
+						panelMain.add(panelSchedule);
+						panelLast = panelSchedule;
+						panelLevel++;
+						panelSchedule.setVisible(true);
+						panelSchedule.revalidate();
+						panelSchedule.repaint();
+					}
+				}
 			} else if(buttonNumber == 2){ //add button
 				panelCreateAdd[1].remove(panelCreateAddButtonHome[1]);
 				panelCreateAdd[1].add(panelCreateEmployee());
@@ -783,7 +999,27 @@ public class New extends Page{
 				panelCreateAdd[1].revalidate();
 				panelCreateAdd[1].repaint();
 			}
-		} 
+		} else if(panelLevel == 3){
+			if(buttonNumber == 0){ //back
+				panelLast.setVisible(false);
+				panelMain.remove(panelLast);
+				panelMain.add(panelCreate[1]);
+				panelLast = panelCreate[1];
+				panelLevel--;
+				panelCreate[1].setVisible(true);
+				panelCreate[1].revalidate();
+				panelCreate[1].repaint();
+			} else {
+				panelLast.setVisible(false);
+				panelMain.remove(panelLast);
+				panelMain.add(panel0);
+				panelLast = panel0;
+				panelLevel = 0;
+				panel0.setVisible(true);
+				panel0.revalidate();
+				panel0.repaint();
+			}
+		}
 	}
 	
 }
