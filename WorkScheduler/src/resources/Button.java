@@ -36,6 +36,8 @@ public class Button extends JPanel implements MouseListener{
 	
 	private MatteBorder underline;
 	
+	private boolean hyperlink;
+	
 	public Button(String name, int width, int height, int fontSize, int buttonNumber, boolean photo, String filePath){
 		addMouseListener(this);
 		
@@ -50,6 +52,7 @@ public class Button extends JPanel implements MouseListener{
 		this.buttonNumber = buttonNumber;
 		this.photo = photo;
 		this.filePath = filePath;
+		this.hyperlink = false;
 		
 		setMainPanel();
 		this.add(mainPanel);
@@ -59,10 +62,60 @@ public class Button extends JPanel implements MouseListener{
 		this.repaint();
 	}
 
+	public Button(String name, int fontSize, int buttonNumber){
+		addMouseListener(this);
+		
+		Character temp = name.charAt(0);
+		String nameCaps = temp.toString().toUpperCase() + name.substring(1);
+		this.name = nameCaps;
+		
+		this.fontSize = fontSize;
+		this.buttonNumber = buttonNumber;
+		
+		this.width = 0;
+		this.height = 0;
+		this.photo = false;
+		this.filePath = "";
+		this.hyperlink = false;
+		
+		
+		setMainPanel();
+		this.add(mainPanel);
+		
+		this.isVisible();
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public Button(String name, int fontSize, int buttonNumber, boolean hyperlink){
+		addMouseListener(this);
+		
+		Character temp = name.charAt(0);
+		String nameCaps = temp.toString().toUpperCase() + name.substring(1);
+		this.name = nameCaps;
+		
+		this.fontSize = fontSize;
+		this.buttonNumber = buttonNumber;
+		this.hyperlink = hyperlink;
+		
+		this.width = 0;
+		this.height = 0;
+		this.photo = false;
+		this.filePath = "";
+		
+		
+		setMainPanel();
+		this.add(mainPanel);
+		
+		this.isVisible();
+		this.revalidate();
+		this.repaint();
+	}
+	
 	private void setMainPanel(){
 		mainPanel = new JPanel();
 		
-		mainPanel.setPreferredSize(new Dimension(this.width, this.height));
+		if(!(width == 0 && height == 0)) mainPanel.setPreferredSize(new Dimension(this.width, this.height));
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.setOpaque(false);
 		
@@ -79,8 +132,14 @@ public class Button extends JPanel implements MouseListener{
 	private void setName(){
 		JLabel label = new JLabel(this.name);
 		
-		label.setFont(new Font("Microsoft JhengHei", Font.PLAIN, this.fontSize));
-		label.setForeground(MainFrame.brightBgColor);
+		if(!hyperlink){
+			label.setFont(new Font("Microsoft JhengHei", Font.PLAIN, this.fontSize));
+			label.setForeground(MainFrame.brightBgColor);
+		} else {
+			label.setFont(new Font("Microsoft JhengHei", Font.ITALIC, this.fontSize));
+			label.setForeground(MainFrame.midBgColor);
+			label.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, MainFrame.midBgColor));
+		}
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		mainPanel.add(label, BorderLayout.CENTER);

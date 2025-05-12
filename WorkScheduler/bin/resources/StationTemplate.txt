@@ -1,0 +1,37 @@
+Name of Establishment~
+
+~Stations
+
+Name~ 
+~Time~
+~Busy Hours~
+~Quiet Hours~
+~Minimum Number of Employees~
+~Maximum Number of Employees~
+~Efficient Number of Employees~
+
+~Name~
+~Time~
+~Busy Hours~
+~Quiet Hours~
+~Minimum Number of Employees~
+~Maximum Number of Employees~
+~Efficient Number of Employees~
+
+~Name~
+~Time~
+~Busy Hours~
+~Quiet Hours~
+~Minimum Number of Employees~
+~Maximum Number of Employees~
+~Efficient Number of Employees~
+
+~Name~
+~Time~
+~Busy Hours~
+~Quiet Hours~
+~Minimum Number of Employees~
+~Maximum Number of Employees~
+~Efficient Number of Employees~
+
+(copy and paste if needing more, delete extra)

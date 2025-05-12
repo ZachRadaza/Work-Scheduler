@@ -4,6 +4,7 @@ import main.FileRead;
 import main.Store;
 import main.TimeConverter;
 import resources.Button;
+import resources.FileDropHandler;
 import resources.HintTextField;
 
 import java.awt.BorderLayout;
@@ -12,17 +13,26 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicScrollBarUI;
@@ -44,11 +54,11 @@ public class New extends Page{
 	//panels on different steps on process
 	private static JPanel[] allPanels = new JPanel[5];
 	private static JPanel panel0 = new JPanel();
-	private static JPanel[] panelHeader = new JPanel[4];
-	private static JPanel[] panelFooter = new JPanel[4];
+	private static JPanel[] panelHeader = new JPanel[5];
+	private static JPanel[] panelFooter = new JPanel[5];
 	private static JPanel[] panelCreate = new JPanel[2]; //0 and 1
 	public static JPanel panelSchedule = new JPanel();
-	private static JPanel panelTemplate0 = new JPanel();
+	private static JPanel panelTemplate = new JPanel();
 	
 	//which panel we are currently at
 	private static int panelLevel = 0;
@@ -62,6 +72,7 @@ public class New extends Page{
 	private static JPanel[] panel0Board = new JPanel[3];
 	private static JPanel[] panel0BoardHome = new JPanel[3];
 	private static JPanel panel0Center = new JPanel();
+	
 	//for panel create 0 and 1
 	private static ArrayList<JPanel> panelStations = new ArrayList<>();
 	private static ArrayList<JPanel> panelEmp = new ArrayList<>();
@@ -72,14 +83,23 @@ public class New extends Page{
 	private static JPanel[] panelCreateAdd = new JPanel[2];
 	private static JPanel[] panelCreateAddButtonHome = new JPanel[2];
 	private static JPanel panelCreateIns = new JPanel(); //holder for instruction label
+	
+	//for panel template
+	private static JPanel panelTemplateCenter = new JPanel();
+	private static JPanel[] fileSelectWrapper = new JPanel[2];
+	private static String filePathEmp = "";
+	private static String filePathStation = "";
+	
 	//for panel schedule
 	private static Store[] store;
 	private static JPanel panelSchedCenter = new JPanel();
 	private static JPanel[] panelSchedDay;
+	private static boolean backCreate = false; //for when back button is pressed, true if schedule was created through manual, false if template
 	
 	//buttons
 	private Button[] buttonPanel0 = new Button[6];
 	private static ArrayList<LinkedList<Button>> buttonPanelCreate = new ArrayList<>();
+	private static LinkedList<Button> buttonPanelTemplate = new LinkedList<>();
 	private static LinkedList<Button> buttonPanelSchedule = new LinkedList<>();
 	
 	//incorporates task bar at the left, templates, and recents. Follow word display
@@ -135,7 +155,7 @@ public class New extends Page{
 		setPanelCreate(0);
 		setPanelCreate(1);
 		setPanelSchedule();
-		setPanelTemplate0();
+		setPanelTemplate();
 	}
 	
 	private void setHeader(int i, String text){
@@ -176,7 +196,7 @@ public class New extends Page{
 		panelFooter[i].add(buttons.get(0), BorderLayout.WEST);
 		
 		//sets up next panel
-		buttons.add(new Button("next", 50, 30, 15, 1, false, ""));
+		buttons.add(new Button("next", 15, 1));
 		buttons.get(1).setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 		buttons.get(1).setVisible(true);
 		buttons.get(1).revalidate();
@@ -675,28 +695,53 @@ public class New extends Page{
 	}
 	
 	//pop ups that appear if information was not inputed properly
-	private static boolean panelStationsValidatePopUp(){
-		if(!panelStationsValidate()){
-			JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Station's Data", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
-			return false;
-		} else {
-			pushPanelStationsData();
-			return true;
+	private static boolean panelStationsValidatePopUp(int i){ //i==0 is manually creating, i == 1 is template
+		if(i == 0){
+			if(!panelStationsValidate()){
+				JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Station's Data", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			} else {
+				pushPanelStationsData();
+				return true;
+			}
+		} else{
+			if(!FileRead.readFileStore(filePathStation)){
+				JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Station's Data on the Tempalte", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
+				FileRead.reset();
+				return false;
+			} else {
+				FileRead.reset();
+				return true;
+			}
 		}
 	}
 	
-	private static boolean panelEmpValidatePopUp(){
-		if(!panelEmpValidate()){
-			JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Employee's Data", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
-			return false;
+	private static boolean panelEmpValidatePopUp(int i){//i==0 is manually creating, i == 1 is template
+		if(i == 0){
+			if(!panelEmpValidate()){
+				JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Employee's Data", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			} else {
+				pushPanelEmpData();
+				return true;
+			}
 		} else {
-			pushPanelEmpData();
-			return true;
+			if(!FileRead.readFileEmp(filePathEmp)){
+				JOptionPane.showMessageDialog(null, "Invalid Information Inputted on Employee's Data on the Template", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
+				FileRead.reset();
+				return false;
+			} else {
+				FileRead.reset();
+				return true;
+			}
 		}
 	}
 	
 	//pushes panelStations into panelStationsData
 	private static void pushPanelStationsData(){
+		while(!panelStationsData.isEmpty()){
+			panelStationsData.remove(0);
+		}
 		for(int i = 0; i < panelStationsTextFields.size(); i++){
 			//for easier input
 			String name = panelStationsTextFields.get(i)[0].getText();
@@ -719,6 +764,9 @@ public class New extends Page{
 	}
 	//pushes panelEmp into panelEmpData
 	private static void pushPanelEmpData(){
+		while(!panelEmpData.isEmpty()){
+			panelEmpData.remove(0);
+		}
 		for(int i = 0; i < panelEmpTextFields.size(); i++){
 			//for easier input
 			String[] temp = new String[panelEmpTextFields.get(i).length];
@@ -759,24 +807,199 @@ public class New extends Page{
 		}
 	}
 	
-	private void setPanelTemplate0(){
+	private void setPanelTemplate(){
+		allPanels[3] = panelTemplate;
 		
-		allPanels[3] = panelTemplate0;
+		panelTemplate.setBackground(MainFrame.darkMidBgColor);
+		panelTemplate.setLayout(new BorderLayout());
 		
-		panelTemplate0.setVisible(true);
-		panelTemplate0.revalidate();
-		panelTemplate0.repaint();
+		setHeader(3, "Add Template");
+		panelTemplate.add(panelHeader[3], BorderLayout.NORTH);
+		
+		setFooter(3, buttonPanelTemplate);
+		panelTemplate.add(panelFooter[3], BorderLayout.SOUTH);
+		
+		panelTemplateCenter.setLayout(new BoxLayout(panelTemplateCenter, BoxLayout.Y_AXIS));
+		panelTemplateCenter.setBackground(MainFrame.darkMidBgColor);
+		//adds instructions
+		JPanel insHolder = new JPanel();
+		insHolder.setBackground(MainFrame.darkMidBgColor);
+		insHolder.setLayout(new BoxLayout(insHolder, BoxLayout.X_AXIS));
+		insHolder.setPreferredSize(new Dimension(580, 30));
+		//insHolder.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+		
+		JLabel ins = new JLabel("Add Stations and Employee Availability through the use of the");
+		ins.setForeground(MainFrame.brightBgColor);
+		ins.setOpaque(false);
+		ins.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
+		ins.setBorder(BorderFactory.createEmptyBorder(7, 0, 0, 0)); //aligns it with button
+		
+		buttonPanelTemplate.add(new Button("Downloadable Templates ", 15, 2, true));
+		buttonPanelTemplate.get(2).setMaximumSize(new Dimension(185, 40));
+		
+		insHolder.add(ins);
+		insHolder.add(buttonPanelTemplate.get(2));
+		panelTemplateCenter.add(insHolder);
+		
+		//adds options to add files
+		panelTemplateFileSection(0);
+		panelTemplateFileSection(1);
+		
+		//for preferred size
+		Dimension dimension = panelTemplateCenter.getPreferredSize();
+		dimension.width = 750;
+		panelTemplateCenter.setPreferredSize(dimension);
+		panelTemplate.add(panelTemplateCenter, BorderLayout.CENTER);
+		
+		panelTemplate.setVisible(true);
+		panelTemplate.revalidate();
+		panelTemplate.repaint();
+	}
+	//adds separate sections for employee and station template
+	private static void panelTemplateFileSection(int i){ //i==0 is station, i == 1 is employee		
+		fileSelectWrapper[i] = new JPanel();
+		panelTemplateFileSectionWrapper(i);
+		
+		JPanel fileSelectBorder = new JPanel();
+		fileSelectBorder.setOpaque(false);
+		fileSelectBorder.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		fileSelectBorder.add(fileSelectWrapper[i]);
+		panelTemplateCenter.add(fileSelectBorder);
+	}
+	//for the options of the wrapper with the choose files, creates it
+	private static void panelTemplateFileSectionWrapper(int i){
+		//for borders
+		fileSelectWrapper[i].removeAll();
+		String[] title = {"Template for Station", "Template for Employees"};
+		fileSelectWrapper[i].setOpaque(false);
+		fileSelectWrapper[i].setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(MainFrame.darkBgColor, 2), title[i], 2, 0, new Font("Microsoft JhengHei", Font.PLAIN, 20), MainFrame.brightBgColor));
+		
+		JPanel fileSelectHolder = new JPanel();
+		fileSelectHolder.setOpaque(false);
+		fileSelectHolder.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		fileSelectHolder.setLayout(new BoxLayout(fileSelectHolder, BoxLayout.Y_AXIS));
+		
+		buttonPanelTemplate.add(new Button("Choose Files", 20, 3 + i));
+		
+		JPanel or = new JPanel();
+		or.setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, MainFrame.darkBgColor), "OR", 2, 0, new Font("Microsoft JhengHei", Font.PLAIN, 15), MainFrame.brightBgColor));
+		or.setOpaque(false);
+
+		JPanel dragDropPanel = new JPanel();
+		dragDropPanel.setBorder(BorderFactory.createDashedBorder(null, 1f, 5f, 5f, true));
+		dragDropPanel.setOpaque(false);
+		dragDropPanel.setForeground(MainFrame.brightBgColor);
+		dragDropPanel.setPreferredSize(new Dimension(700, 150));
+		JTextArea dragDrop = new JTextArea("Drag and Drop Files");
+		dragDrop.setOpaque(false);
+		dragDrop.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 20));
+		dragDrop.setForeground(MainFrame.brightBgColor);
+		dragDrop.setDropTarget(null);
+		dragDrop.setTransferHandler(new FileDropHandler(i));
+		dragDrop.setBorder(BorderFactory.createEmptyBorder(50, 0, 50, 0));
+		dragDropPanel.add(dragDrop);
+		
+		fileSelectHolder.add(buttonPanelTemplate.get(3 + i));
+		fileSelectHolder.add(or);
+		fileSelectHolder.add(dragDropPanel);
+		
+		fileSelectWrapper[i].add(fileSelectHolder);
+		fileSelectWrapper[i].revalidate();
+		fileSelectWrapper[i].repaint();
+	}
+	
+	//for when a file is added into the section
+	private static void panelTemplateFileAdded(int i){//i==0 is station, i == 1 is employee
+		fileSelectWrapper[i].removeAll();
+		
+		JPanel fileBorder = new JPanel();
+		fileBorder.setOpaque(false);
+		fileBorder.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		JPanel fileHolder = new JPanel();
+		fileHolder.setOpaque(false);
+		fileHolder.setBorder(BorderFactory.createLineBorder(MainFrame.midBgColor, 1));
+		fileHolder.setLayout(new BorderLayout());
+		
+		JLabel fileName = new JLabel();
+		fileName.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
+		fileName.setForeground(MainFrame.brightBgColor);
+		if(i == 0) fileName.setText(filePathStation);
+		else fileName.setText(filePathEmp);
+		
+		JLabel labelIcon = new JLabel();
+		labelIcon.setIcon(new ImageIcon(new ImageIcon("media/taskBar/homeIcon.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+		//labelIcon.setAlignmentX(CENTER_ALIGNMENT);
+		//labelIcon.setAlignmentY(CENTER_ALIGNMENT);
+		labelIcon.setOpaque(false);
+		labelIcon.setVisible(true);
+		labelIcon.revalidate();
+		labelIcon.repaint();
+		
+		buttonPanelTemplate.add(new Button("x", 15, 5 + i));
+		buttonPanelTemplate.get(5 + i).setAlignmentX(RIGHT_ALIGNMENT);
+		
+		fileHolder.add(fileName, BorderLayout.SOUTH);
+		fileHolder.add(labelIcon, BorderLayout.CENTER);
+		fileHolder.add(buttonPanelTemplate.get(5 + i), BorderLayout.EAST);
+		
+		fileBorder.add(fileHolder);
+		fileSelectWrapper[i].add(fileBorder);
+		fileSelectWrapper[i].revalidate();
+		fileSelectWrapper[i].repaint();
+	}
+	//to download files
+	private static void copyLocalFile() {
+		String[] sourcePath = {"src/resources/StationTemplate.txt", "src/resources/EmployeeTemplate.txt", "src/resources/StationExample.txt", "src/resources/EmployeeExample.txt"};
+		String[] fileName = {"StationTemplate.txt", "EmployeeTemplate.txt", "StationExample.txt", "EmployeeExample.txt"};
+		
+	    String downloadsPath = System.getProperty("user.home") + File.separator + "Downloads";
+	    String[] destinationPath = new String[4];
+		for(int i = 0; i < destinationPath.length; i++) destinationPath[i] = downloadsPath + File.separator + fileName[i];
+	    
+        try {
+        	for(int i = 0; i < sourcePath.length; i++) Files.copy(Paths.get(sourcePath[i]), Paths.get(destinationPath[i]), StandardCopyOption.REPLACE_EXISTING);
+            JOptionPane.showMessageDialog(null, "File Donwloaded Successfully", "File Donwload", JOptionPane.INFORMATION_MESSAGE);
+            
+        } catch (IOException ex) {
+        	JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage(), "File Download", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+	
+	private static void chooseFile(int file){ //file == 0 is stations file path, int == 1 is emp file path
+		JFileChooser fileChooser = new JFileChooser();
+		int response = fileChooser.showOpenDialog(null);
+		if(response == JFileChooser.APPROVE_OPTION){
+			if(file == 0) filePathStation = fileChooser.getSelectedFile().getAbsolutePath();
+			else filePathEmp = fileChooser.getSelectedFile().getAbsolutePath();
+			
+			panelTemplateFileAdded(file);
+		} else if(response == JFileChooser.ERROR_OPTION){
+			JOptionPane.showMessageDialog(null, "An Error has ocurred while choosing a file");
+		}
+	}
+	
+	public static void setFilePathStation(String filePath){
+		filePathStation = filePath.trim();
+	}
+	
+	public static void setFilePathEmp(String filePath){
+		filePathEmp = filePath.trim();
+	}
+	
+	public static void setPanelFileAdded(int i){
+		panelTemplateFileAdded(i);
 	}
 	
 	private void setPanelSchedule(){
 		panelSchedule.setBackground(MainFrame.darkMidBgColor);
 		panelSchedule.setLayout(new BorderLayout());
 		
-		setHeader(3, "Created Schedule");
-		panelSchedule.add(panelHeader[3], BorderLayout.NORTH);
+		setHeader(4, "Created Schedule");
+		panelSchedule.add(panelHeader[4], BorderLayout.NORTH);
 		
-		setFooter(3, buttonPanelSchedule);
-		panelSchedule.add(panelFooter[3], BorderLayout.SOUTH);
+		setFooter(4, buttonPanelSchedule);
+		panelSchedule.add(panelFooter[4], BorderLayout.SOUTH);
 		
 		panelSchedule.add(panelSchedCenter, BorderLayout.CENTER);
 		
@@ -788,10 +1011,10 @@ public class New extends Page{
 	}
 	//TODO: Add created schedules to open
 	private static void createSchedule(int n){ //n = 0 is creating from scratch, n = 1 is using template
-		store = null;
 		store = new Store[days];
-		panelSchedDay = null;
 		panelSchedDay = new JPanel[days];
+		FileRead.reset();
+		
 		if(n == 0){
 			pushDataFileRead();
 			if(days == 1){ //checks which day the single schedule is wanted through checking availability
@@ -808,12 +1031,30 @@ public class New extends Page{
 				for(int i = 1; i <= 5; i++) //adjusted for starting at Monday's
 					store[i - 1] = new Store(i);
 			} else{
-				for(int i = 0; i < store.length; i++){
+				for(int i = 0; i < store.length; i++)
 					store[i] = new Store(i);
-				}
 			}
 		} else {
-			//for template
+			if(days == 1){
+				//done to read files and see which day we are trying to schedule
+				FileRead.readFileEmp(filePathEmp);
+				String[] avail = {FileRead.getEmpSunAvail(), FileRead.getEmpMonAvail(), FileRead.getEmpTueAvail(), FileRead.getEmpWedAvail(), FileRead.getEmpThurAvail(), FileRead.getEmpFriAvail(), FileRead.getEmpSatAvail(), };
+				FileRead.reset();
+				int index = 0;
+				for(int i = 0; i < 7; i++){
+					if(!avail[i].equals("0:00-0:00")){
+						index = i;
+						break;
+					}
+				}
+				store[0] = new Store(index, filePathEmp, filePathStation);
+			} else if(days == 5){
+				for(int i = 1; i <= 5; i++) //adjusted for starting at Monday's
+					store[i - 1] = new Store(i, filePathEmp, filePathStation);
+			} else{
+				for(int i = 0; i < store.length; i++)
+					store[i] = new Store(i, filePathEmp, filePathStation);
+			}
 		}
 	}
 	//TODO: add download
@@ -933,17 +1174,14 @@ public class New extends Page{
 	}
 	
 	private Button setBackButton(){
-		Button button = new Button("back", 50, 30, 15, 0, false, "");
+		Button button = new Button("back", 15, 0);
 		
 		return button;
 	}
 	
-	private static void backPress(){
-		
-	}
-	
-	private static void nextPress(){
-		panelLevel++;
+	private static void footerPress(int button){ //0 == back, 1 == next
+		if(button == 0) panelLevel--;
+		else panelLevel++;
 		panelLast.setVisible(false);
 		panelMain.remove(panelLast);
 		panelMain.add(allPanels[panelLevel]);
@@ -982,39 +1220,18 @@ public class New extends Page{
 				days = 5;
 			}
 			if(buttonNumber % 2 == 0) { //for panel create pressed
-				panelMain.add(panelCreate[0]);
-				panelLast = panelCreate[0];
-				panelLevel++;
-				panelCreate[0].setVisible(true);
-				panelCreate[0].revalidate();
-				panelCreate[0].repaint();
+				backCreate = true;
+				footerPress(1);
 			} else {
-				panelMain.add(panelTemplate0);
-				panelLast = panelTemplate0;
-				panelLevel--;
-				panelTemplate0.setVisible(true);
-				panelTemplate0.revalidate();
-				panelTemplate0.repaint();
+				backCreate = false;
+				panelLevel = 2;
+				footerPress(1);
 			}
 		} else if(panelLevel == 1){ //station add screen
 			if(buttonNumber == 0){//back button
-				panelLast.setVisible(false);
-				panelMain.remove(panelLast);
-				panelMain.add(panel0);
-				panelLast = panel0;
-				panelLevel--;
-				panel0.setVisible(true);
-				panel0.revalidate();
-				panel0.repaint();
+				footerPress(buttonNumber);
 			} else if(buttonNumber == 1){ //next button
-				panelLast.setVisible(false);
-				panelMain.remove(panelLast);
-				panelMain.add(panelCreate[1]);
-				panelLast = panelCreate[1];
-				panelLevel++;
-				panelCreate[1].setVisible(true);
-				panelCreate[1].revalidate();
-				panelCreate[1].repaint();
+				footerPress(buttonNumber);
 			} else if(buttonNumber == 2){ //add button
 				panelCreateAdd[0].remove(panelCreateAddButtonHome[0]);
 				panelCreateAdd[0].add(panelCreateStations());
@@ -1030,29 +1247,15 @@ public class New extends Page{
 			}
 		} else if(panelLevel == 2){ //employee add screen
 			if(buttonNumber == 0){//back button
-				panelLast.setVisible(false);
-				panelMain.remove(panelLast);
-				panelMain.add(panelCreate[0]);
-				panelLast = panelCreate[0];
-				panelLevel--;
-				panelCreate[0].setVisible(true);
-				panelCreate[0].revalidate();
-				panelCreate[0].repaint();
+				footerPress(buttonNumber);
 			} else if(buttonNumber == 1){ //next button
-				if(panelStationsValidatePopUp()){
-					if(panelEmpValidatePopUp()){
+				if(panelStationsValidatePopUp(0)){
+					if(panelEmpValidatePopUp(0)){
 						//creates schedule and adds it into panel
 						createSchedule(0);
 						panelScheduleAdd();
-						
-						panelLast.setVisible(false);
-						panelMain.remove(panelLast);
-						panelMain.add(panelSchedule);
-						panelLast = panelSchedule;
 						panelLevel++;
-						panelSchedule.setVisible(true);
-						panelSchedule.revalidate();
-						panelSchedule.repaint();
+						footerPress(buttonNumber);
 					}
 				}
 			} else if(buttonNumber == 2){ //add button
@@ -1068,25 +1271,38 @@ public class New extends Page{
 				panelCreateAdd[1].revalidate();
 				panelCreateAdd[1].repaint();
 			}
-		} else if(panelLevel == 3){
+		} else if(panelLevel == 3){ //template
 			if(buttonNumber == 0){ //back
-				panelLast.setVisible(false);
-				panelMain.remove(panelLast);
-				panelMain.add(panelCreate[1]);
-				panelLast = panelCreate[1];
-				panelLevel--;
-				panelCreate[1].setVisible(true);
-				panelCreate[1].revalidate();
-				panelCreate[1].repaint();
-			} else {
-				panelLast.setVisible(false);
-				panelMain.remove(panelLast);
-				panelMain.add(panel0);
-				panelLast = panel0;
-				panelLevel = 0;
-				panel0.setVisible(true);
-				panel0.revalidate();
-				panel0.repaint();
+				panelLevel = 1;
+				footerPress(buttonNumber);
+			} else if(buttonNumber == 1){ //next
+				//validate and generate schedules
+				if(panelStationsValidatePopUp(1)){
+					if(panelEmpValidatePopUp(1)){
+						//creates schedule and adds it into panel
+						createSchedule(1);
+						panelScheduleAdd();
+						footerPress(buttonNumber);
+					}
+				}
+			} else if(buttonNumber == 2){ //download
+				copyLocalFile();
+			} else if(buttonNumber == 3){ //choose files for station
+				chooseFile(0);
+			} else if(buttonNumber == 4){ //choose files for employee
+				chooseFile(1);
+			} else if(buttonNumber == 5){ //removes files for station
+				panelTemplateFileSectionWrapper(0);
+			} else{ //removes files for employee
+				panelTemplateFileSectionWrapper(1);
+			}
+		} else if(panelLevel == 4){
+			if(buttonNumber == 0){ //back
+				if(backCreate) panelLevel--;
+				footerPress(buttonNumber);
+			} else { //next, brings it back to first panel
+				panelLevel = -1;
+				footerPress(buttonNumber);
 			}
 		}
 	}

@@ -34,7 +34,7 @@ public class FileRead{
 	private static int numberOfEmp = 0; //keeps count of number of employee
 
 	//reads file for store
-	public static void readFileStore(String filePath){
+	public static boolean readFileStore(String filePath){
 		try{
 			File file = new File(filePath);   // connects file to file object
 			Scanner readFile = new Scanner(file);
@@ -71,10 +71,12 @@ public class FileRead{
 				//reads busy hours
 				readFile.next();
 				token = readFile.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				busyHours.add(token);
 				//reads quiet hours
 				readFile.next();
 				token = readFile.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				quietHours.add(token);
 				
 				// minimum number of employees
@@ -99,19 +101,22 @@ public class FileRead{
 			}
 			
 			readFile.close();
+			return true;
 		} catch(FileNotFoundException e) {
 			System.err.println("Problem finding file pookie sorry");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			return false;
 		} catch(NumberFormatException e){
 			System.err.println("Incorrect inputs");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
 		
 	}
 	//reads employee file
-	public static void readFileEmp(String filePath){
+	public static boolean readFileEmp(String filePath){
 		try{
 			File file = new File(filePath);
 			Scanner fileRead = new Scanner(file);
@@ -132,30 +137,37 @@ public class FileRead{
 				
 				fileRead.next();
 				token = fileRead.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				empSunAvail.add(token);
 				
 				fileRead.next();
 				token = fileRead.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				empMonAvail.add(token);
 				
 				fileRead.next();
 				token = fileRead.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				empTueAvail.add(token);
 				
 				fileRead.next();
 				token = fileRead.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				empWedAvail.add(token);
 
 				fileRead.next();
 				token = fileRead.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				empThurAvail.add(token);
 				
 				fileRead.next();
 				token = fileRead.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				empFriAvail.add(token);
 				
 				fileRead.next();
 				token = fileRead.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "0:00-0:00";
 				empSatAvail.add(token);
 				//adds stations they can work in
 				fileRead.next();
@@ -165,14 +177,17 @@ public class FileRead{
 				numberOfEmp++;
 			}
 			fileRead.close();
+			return true;
 		} catch (FileNotFoundException e){
 			System.err.println("Sorry pookie file was not found :(");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			return false;
 		}  catch(NumberFormatException e){
 			System.err.println("Incorrect inputs");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
 	}
 	//getters
@@ -419,5 +434,32 @@ public class FileRead{
 
 	public static void addEmpStation(String station) {
 	    empStations.add(station);
+	}
+	
+	public static void reset(){
+		storeName = "";
+		numberOfStations = 0;
+		numberOfEmp = 0;
+		//stations
+	    stationNames.clear();
+	    timeOpen.clear();
+	    timeClose.clear();
+	    busyHours.clear();
+	    quietHours.clear();
+	    minNumEmp.clear();
+	    maxNumEmp.clear();
+	    effNumEmp.clear();
+		
+		//emps
+	    empNameFirst.clear();
+	    empNameLast.clear();
+	    empSunAvail.clear();
+	    empMonAvail.clear();
+	    empTueAvail.clear();
+	    empWedAvail.clear();
+	    empThurAvail.clear();
+	    empFriAvail.clear();
+	    empSatAvail.clear();
+	    empStations.clear();
 	}
 }
