@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.swing.TransferHandler;
 
-import display.New;
+import display.NewPage.New;
+import display.NewPage.Template;
 
 public class FileDropHandler extends TransferHandler {
 	/**
@@ -40,10 +41,10 @@ public class FileDropHandler extends TransferHandler {
                 sb.append(file.getAbsolutePath()).append("\n");
             }
             
-            if(i == 0) New.setFilePathStation(sb.toString());
-            else New.setFilePathEmp(sb.toString());
+            if(i == 0) ((Template) New.getAllPanel(3)).setFilePathStation(sb.toString());
+            else ((Template) New.getAllPanel(3)).setFilePathEmp(sb.toString());
             
-            New.setPanelFileAdded(this.i);
+            ((Template) New.getAllPanel(3)).setPanelFileAdded(this.i);
             
             return true;
 

@@ -3,7 +3,7 @@ Name of Establishment~Pookie
 ~Stations
 
 Name~Cold Stone
-~Time~9:00-22:00
+~Time~10:00-22:00
 ~Busy Hours~11:00-13:00, 15:00-21:00
 ~Quiet Hours~13:00-17:00
 ~Minimum Number of Employees~1

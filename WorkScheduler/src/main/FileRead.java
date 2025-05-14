@@ -82,18 +82,21 @@ public class FileRead{
 				// minimum number of employees
 				readFile.next();
 				token = readFile.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "1";
 				int min = Integer.parseInt(token);
 				minNumEmp.add(min);
 				
 				//maximum number of employees
 				readFile.next();
 				token = readFile.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "1";
 				int max = Integer.parseInt(token);
 				maxNumEmp.add(max);
 				
 				//efficient number of employees
 				readFile.next();
 				token = readFile.next().trim();
+				if(token.toLowerCase().equals("n/a")) token = "1";
 				int eff = Integer.parseInt(token);
 				effNumEmp.add(eff);
 				
@@ -103,14 +106,18 @@ public class FileRead{
 			readFile.close();
 			return true;
 		} catch(FileNotFoundException e) {
+			/*
 			System.err.println("Problem finding file pookie sorry");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			*/
 			return false;
 		} catch(NumberFormatException e){
+			/*
 			System.err.println("Incorrect inputs");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			*/
 			return false;
 		}
 		
@@ -179,14 +186,18 @@ public class FileRead{
 			fileRead.close();
 			return true;
 		} catch (FileNotFoundException e){
+			/*
 			System.err.println("Sorry pookie file was not found :(");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			*/
 			return false;
 		}  catch(NumberFormatException e){
+			/*
 			System.err.println("Incorrect inputs");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			*/
 			return false;
 		}
 	}

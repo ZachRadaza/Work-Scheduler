@@ -6,6 +6,7 @@ import java.awt.GraphicsEnvironment;
 
 import javax.swing.JPanel;
 
+import display.NewPage.New;
 import resources.Frame;
 
 //home screen

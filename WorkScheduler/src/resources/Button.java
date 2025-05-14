@@ -15,7 +15,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
 import display.MainFrame;
-import display.New;
+import display.NewPage.New;
 
 public class Button extends JPanel implements MouseListener{
 	
