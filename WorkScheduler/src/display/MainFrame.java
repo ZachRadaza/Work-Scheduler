@@ -7,6 +7,7 @@ import java.awt.GraphicsEnvironment;
 import javax.swing.JPanel;
 
 import display.NewPage.New;
+import display.OpenPage.Open;
 import resources.Frame;
 
 //home screen
@@ -21,11 +22,11 @@ public class MainFrame{
 	
 	private TaskBar taskBar;
 	//panels for the different pages
-	private static Home homePanel;
-	private static New newPanel;
-	private static Open openPanel;
-	private static Settings settingPanel;
-	private static About aboutPanel;
+	public static Home homePanel;
+	public static New newPanel;
+	public static Open openPanel;
+	public static Settings settingPanel;
+	public static About aboutPanel;
 	//holds the last/current panel being used, helps remove it for replacing the front
 	private static JPanel lastPanel;
 	private static int lastPanelInt; // 0 is home, 4 is about, for which buttons to check when clicked
@@ -55,7 +56,7 @@ public class MainFrame{
 		//listFonts();
 	}
 	
-	protected void startUp(){
+	protected static void startUp(){
 		mainFrame.add(homePanel);
 		lastPanel = homePanel;
 		lastPanelInt = 0;
@@ -94,7 +95,7 @@ public class MainFrame{
 	protected static void openSettingPanel(){
 		mainFrame.remove(lastPanel);
 		mainFrame.add(settingPanel);
-		settingPanel.isVisible();
+		settingPanel.setVisible(true);
 		settingPanel.revalidate();
 		settingPanel.repaint();
 		lastPanel = settingPanel;

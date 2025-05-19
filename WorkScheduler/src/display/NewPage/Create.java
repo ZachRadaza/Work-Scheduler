@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 import data.EmployeeData;
 import data.StationData;
 import display.MainFrame;
+import display.OpenPage.Open;
 import main.FileRead;
 import main.TimeConverter;
 import resources.Button;
@@ -619,6 +620,9 @@ public class Create extends JPanel{
 					//creates schedule and adds it into panel
 					getStartingDay();
 					pushDataFileRead();
+					Open.addStationData(panelStationsData); //pushed needed data
+					Open.addEmpData(panelEmpData);
+					Open.setPanel(); //adds buttons to edit
 					New.setAllPanels(4, new Schedule(days, startingDay));
 					New.adjustPanelLevel(1);
 					New.footerPress(buttonNumber);

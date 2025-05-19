@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -20,7 +21,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import data.EmployeeData;
+import data.StationData;
 import display.MainFrame;
+import display.OpenPage.Open;
 import main.FileRead;
 import resources.Button;
 import resources.FileDropHandler;
@@ -37,6 +41,9 @@ public class Template extends JPanel{
 	private String filePathEmp;
 	private String filePathStation;
 	private LinkedList<Button> buttonPanelTemplate;
+	
+	private ArrayList<StationData> stationsData;
+	private ArrayList<EmployeeData> empData;
 	
 	private int days;
 
@@ -83,6 +90,12 @@ public class Template extends JPanel{
 		//adds options to add files
 		panelFileSection(0);
 		panelFileSection(1);
+		
+		//adding the buttons to avoid bug, bug happens when moving file into employee before station
+		for(int i = 0; i < 2; i++){
+			buttonPanelTemplate.add(new Button("x", 15, 5 + i));
+			buttonPanelTemplate.get(5 + i).setAlignmentX(RIGHT_ALIGNMENT);
+		}
 				
 		//for preferred size
 		Dimension dimension = panelCenter.getPreferredSize();
@@ -177,9 +190,6 @@ public class Template extends JPanel{
 		labelIcon.revalidate();
 		labelIcon.repaint();
 			
-		buttonPanelTemplate.add(new Button("x", 15, 5 + i));
-		buttonPanelTemplate.get(5 + i).setAlignmentX(RIGHT_ALIGNMENT);
-			
 		fileHolder.add(fileName, BorderLayout.SOUTH);
 		fileHolder.add(labelIcon, BorderLayout.CENTER);
 		fileHolder.add(buttonPanelTemplate.get(5 + i), BorderLayout.EAST);
@@ -243,6 +253,22 @@ public class Template extends JPanel{
 		}
 	}
 	
+	private void pushData(){
+		stationsData = new ArrayList<>();
+		empData = new ArrayList<>();
+		FileRead.readFileStore(filePathStation);
+		FileRead.readFileEmp(filePathEmp);
+		
+		for(int i = 0; i < FileRead.getNumberOfStations(); i++){
+			stationsData.add(new StationData(FileRead.getStationName(), FileRead.getTimeOpenString(), FileRead.getTimeCloseString(), FileRead.getBusyHours(), FileRead.getQuietHours(), FileRead.getMinNumEmp(), FileRead.getMaxNumEmp(), FileRead.getEffNumEmp()));
+		}
+		for(int i = 0; i < FileRead.getNumberOfEmp(); i++){
+			empData.add(new EmployeeData(FileRead.getEmpNameFirst(), FileRead.getEmpNameLast(), FileRead.getEmpStations(), FileRead.getEmpSunAvail(), FileRead.getEmpMonAvail(), FileRead.getEmpTueAvail(), FileRead.getEmpWedAvail(), FileRead.getEmpThurAvail(), FileRead.getEmpFriAvail(), FileRead.getEmpSatAvail()));
+		}
+		
+		FileRead.reset();
+	}
+	
 	public void setFilePathStation(String filePath){
 		filePathStation = filePath.trim();
 	}
@@ -263,6 +289,10 @@ public class Template extends JPanel{
 			//validate and generate schedules
 			if(validateStationPopUp()){
 				if(validateEmpPopUp()){
+					pushData();
+					Open.addStationData(stationsData); //adds data to open
+					Open.addEmpData(empData);
+					Open.setPanel(); //to reset and have all the made schedules
 					New.setAllPanels(4, new Schedule(days, filePathStation, filePathEmp));
 					New.footerPress(buttonNumber);
 				}

@@ -10,6 +10,8 @@ public class FileRead{
 	//station static fields
 	private static String storeName;
 	private static Queue<String> stationNames = new LinkedList<>();
+	private static Queue<String> timeOpenString = new LinkedList<>();
+	private static Queue<String> timeCloseString = new LinkedList<>();
 	private static Queue<Float> timeOpen = new LinkedList<>();
 	private static Queue<Float> timeClose = new LinkedList<>();
 	private static Queue<String> busyHours = new LinkedList<>();
@@ -60,10 +62,12 @@ public class FileRead{
 				scannerTimeSeparater.useDelimiter("-");
 				//opening time
 				String tokenTime = scannerTimeSeparater.next();
+				timeOpenString.add(tokenTime);
 				float timeO = TimeConverter.converterToFloat(tokenTime);
 				timeOpen.add(timeO);
 				//closing time
 				tokenTime = scannerTimeSeparater.next();
+				timeCloseString.add(tokenTime);
 				float timeC = TimeConverter.converterToFloat(tokenTime);
 				timeClose.add(timeC);
 				scannerTimeSeparater.close();
@@ -228,6 +232,22 @@ public class FileRead{
 			return timeClose.remove();
 		} else {
 			return -1f;
+		}
+	}
+	
+	public static String getTimeOpenString(){
+		if(!timeOpenString.isEmpty()){
+			return timeOpenString.remove();
+		} else {
+			return null;
+		}
+	}
+	
+	public static String getTimeCloseString(){
+		if(!timeCloseString.isEmpty()){
+			return timeCloseString.remove();
+		} else {
+			return null;
 		}
 	}
 	

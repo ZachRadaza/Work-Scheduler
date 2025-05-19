@@ -3,13 +3,10 @@ package display.NewPage;
 import resources.Button;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.plaf.basic.BasicScrollBarUI;
@@ -54,7 +51,7 @@ public class New extends Page{
 	}
 	
 	//sets main panels
-	private void setBody(){
+	private static void setBody(){
 		panelLevel = 0;
 		
 		panelMain.setBackground(MainFrame.darkMidBgColor);
@@ -87,48 +84,7 @@ public class New extends Page{
         //sets speed of scroll
         panelScroll.getVerticalScrollBar().setUnitIncrement(16);
 	}
-	
-	public static JPanel setHeader(String text){
-		JPanel panel = new JPanel();
-		panel.setOpaque(false);
-		
-		JLabel title = new JLabel(text.toUpperCase());
-		title.setForeground(MainFrame.brightBgColor);
-		title.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 25));
-		title.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-		
-		JPanel titleHolder = new JPanel();
-		titleHolder.add(title);
-		titleHolder.setOpaque(false);
-		titleHolder.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, MainFrame.brightBgColor));
-		
-		Dimension panelSize = titleHolder.getPreferredSize();
-		panelSize.width = 750;
-		titleHolder.setPreferredSize(panelSize);
-		
-		panel.add(titleHolder);
-		return panel;
-	}
-	
-	public static JPanel setFooter(LinkedList<Button> buttons){
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.setBackground(MainFrame.darkMidBgColor);
-		panel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, MainFrame.brightBgColor));
-		
-		//sets up back button
-		buttons.add(setBackButton());
-		buttons.get(0).setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		panel.add(buttons.get(0), BorderLayout.WEST);
-		
-		//sets up next panel
-		buttons.add(new Button("next", 15, 1));
-		buttons.get(1).setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-		panel.add(buttons.get(1), BorderLayout.EAST);
-		
-		return panel;
-	}
-	
+
 	private static void setPanel0(){
 		panel0.setBackground(MainFrame.darkMidBgColor);
 		panel0.setLayout(new BorderLayout());
@@ -186,17 +142,11 @@ public class New extends Page{
 		panelLevel = i;
 	}
 	
-	public static void adjustPanelLevel(int i){
+	public static  void adjustPanelLevel(int i){
 		panelLevel += i;
 	}
 	
-	private static Button setBackButton(){
-		Button button = new Button("back", 15, 0);
-		
-		return button;
-	}
-	
-	public static void footerPress(int button){ //0 == back, 1 == next
+	public static  void footerPress(int button){ //0 == back, 1 == next
 		if(button == 0) panelLevel--;
 		else panelLevel++;
 		panelLast.setVisible(false);

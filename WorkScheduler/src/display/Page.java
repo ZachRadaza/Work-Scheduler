@@ -2,12 +2,16 @@ package display;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import resources.Button;
 
 public class Page extends JPanel{
 	
@@ -50,6 +54,47 @@ public class Page extends JPanel{
 		panel.isVisible();
 		panel.revalidate();
 		panel.repaint();
+		return panel;
+	}
+	
+	public static JPanel setHeader(String text){
+		JPanel panel = new JPanel();
+		panel.setOpaque(false);
+		
+		JLabel title = new JLabel(text.toUpperCase());
+		title.setForeground(MainFrame.brightBgColor);
+		title.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 25));
+		title.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+		
+		JPanel titleHolder = new JPanel();
+		titleHolder.add(title);
+		titleHolder.setOpaque(false);
+		titleHolder.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, MainFrame.brightBgColor));
+		
+		Dimension panelSize = titleHolder.getPreferredSize();
+		panelSize.width = 750;
+		titleHolder.setPreferredSize(panelSize);
+		
+		panel.add(titleHolder);
+		return panel;
+	}
+	
+	public static JPanel setFooter(LinkedList<Button> buttons){
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.setBackground(MainFrame.darkMidBgColor);
+		panel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, MainFrame.brightBgColor));
+		
+		//sets up back button
+		buttons.add(new Button("back", 15, 0));
+		buttons.get(0).setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panel.add(buttons.get(0), BorderLayout.WEST);
+		
+		//sets up next panel
+		buttons.add(new Button("next", 15, 1));
+		buttons.get(1).setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		panel.add(buttons.get(1), BorderLayout.EAST);
+		
 		return panel;
 	}
 	
