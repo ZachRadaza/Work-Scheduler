@@ -9,10 +9,10 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import display.MainFrame;
 import display.Page;
+import display.Schedule;
 
 public class New extends Page{
 	
@@ -21,10 +21,9 @@ public class New extends Page{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	//main panel to add and remove things on
-	private static JPanel panelMain = new JPanel();
-	private static JScrollPane panelScroll;
-	
+	//for New page
+	private static JPanel mainPanel = new JPanel();
+	private static JScrollPane scrollPanel = new JScrollPane(mainPanel);
 	private static JPanel[] allPanels = new JPanel[5]; //panels on different steps on process
 	private static int panelLevel = 0; //which panel we are currently at
 	private static JPanel panelLast; //last panel we are in
@@ -41,51 +40,22 @@ public class New extends Page{
 	public New(){
 		super("new");
 		
-		setBody();
+		setBody(scrollPanel, mainPanel);
+		setPanel0();
+		mainPanel.add(panel0);
+		panelLast = panel0;
 		
-		this.add(panelScroll, BorderLayout.CENTER);
+		this.add(scrollPanel, BorderLayout.CENTER);
 		
 		this.setVisible(true);
 		this.revalidate();
 		this.repaint();
 	}
-	
-	//sets main panels
-	private static void setBody(){
-		panelLevel = 0;
-		
-		panelMain.setBackground(MainFrame.darkMidBgColor);
-		
-		setPanel0();
-		
-		panelMain.add(panel0);
-		panelLast = panel0;
-		
-		panelMain.setVisible(true);
-		panelMain.revalidate();
-		panelMain.repaint();
-		
-		panelScroll = new JScrollPane(panelMain);
-		panelScroll.setBorder(null);
-		// Change the background color of the scroll bar track
-        panelScroll.getVerticalScrollBar().setBackground(MainFrame.darkMidBgColor);
-        panelScroll.getHorizontalScrollBar().setBackground(MainFrame.darkMidBgColor);
-        // Change the color of the scroll bar thumb
-        panelScroll.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-            @Override
-            protected void configureScrollBarColors() {
-                this.thumbColor = MainFrame.darkBgColor;
-            }});
-        panelScroll.getHorizontalScrollBar().setUI(new BasicScrollBarUI() {
-            @Override
-            protected void configureScrollBarColors() {
-                this.thumbColor = MainFrame.darkBgColor;
-            }});
-        //sets speed of scroll
-        panelScroll.getVerticalScrollBar().setUnitIncrement(16);
-	}
 
 	private static void setPanel0(){
+		panelLevel = 0;
+		
+		
 		panel0.setBackground(MainFrame.darkMidBgColor);
 		panel0.setLayout(new BorderLayout());
 		
@@ -146,12 +116,12 @@ public class New extends Page{
 		panelLevel += i;
 	}
 	
-	public static  void footerPress(int button){ //0 == back, 1 == next
+	public static void footerPress(int button){ //0 == back, 1 == next
 		if(button == 0) panelLevel--;
 		else panelLevel++;
 		panelLast.setVisible(false);
-		panelMain.remove(panelLast);
-		panelMain.add(allPanels[panelLevel]);
+		mainPanel.remove(panelLast);
+		mainPanel.add(allPanels[panelLevel]);
 		panelLast = allPanels[panelLevel];
 		allPanels[panelLevel].setVisible(true);
 		allPanels[panelLevel].revalidate();
@@ -163,7 +133,7 @@ public class New extends Page{
 		//panel Level, manual is 1 and 2, template 3, schedule 4;
 		if(panelLevel == 0){
 			panelLast.setVisible(false);
-			panelMain.remove(panelLast);
+			mainPanel.remove(panelLast);
 			if(buttonNumber < 2){ //sets days based on button pressed
 				days = 1;
 			} else if(buttonNumber < 4){

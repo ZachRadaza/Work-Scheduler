@@ -10,6 +10,8 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import resources.Button;
 
@@ -33,6 +35,29 @@ public class Page extends JPanel{
 		this.isVisible();
 		this.revalidate();
 		this.repaint();
+	}
+	
+	protected static void setBody(JScrollPane panelScroll, JPanel mainPanel){
+		mainPanel.setBackground(MainFrame.darkMidBgColor);
+		
+		panelScroll.setBorder(null);
+		panelScroll.setBackground(MainFrame.darkMidBgColor);
+		// Change the background color of the scroll bar track
+        panelScroll.getVerticalScrollBar().setBackground(MainFrame.darkMidBgColor);
+        panelScroll.getHorizontalScrollBar().setBackground(MainFrame.darkMidBgColor);
+        // Change the color of the scroll bar thumb
+        panelScroll.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = MainFrame.darkBgColor;
+            }});
+        panelScroll.getHorizontalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = MainFrame.darkBgColor;
+            }});
+        //sets speed of scroll
+        panelScroll.getVerticalScrollBar().setUnitIncrement(16);
 	}
 	
 	private JPanel setTitle(String title){
@@ -97,5 +122,6 @@ public class Page extends JPanel{
 		
 		return panel;
 	}
+	
 	
 }

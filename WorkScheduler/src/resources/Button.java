@@ -16,6 +16,7 @@ import javax.swing.border.MatteBorder;
 
 import display.MainFrame;
 import display.NewPage.New;
+import display.OpenPage.Open;
 
 public class Button extends JPanel implements MouseListener{
 	
@@ -125,7 +126,7 @@ public class Button extends JPanel implements MouseListener{
 		setName();
 		
 		this.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		this.setBackground(MainFrame.darkMidBgColor);
+		this.setOpaque(false);
 		
 	}
 	
@@ -163,8 +164,10 @@ public class Button extends JPanel implements MouseListener{
 		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkMidBgColor);
 		mainPanel.setBorder(underline);
 		
-		mainPanel.setBackground(MainFrame.darkMidBgColor);
-		this.setBackground(MainFrame.darkMidBgColor);
+		mainPanel.setOpaque(false);
+		mainPanel.setBackground(null);
+		this.setOpaque(false);
+		this.setBackground(null);
 	}
 	
 	@Override
@@ -176,6 +179,8 @@ public class Button extends JPanel implements MouseListener{
 		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkBgColor);
 		mainPanel.setBorder(underline);
 		
+		mainPanel.setOpaque(true);
+		this.setOpaque(true);
 		mainPanel.setBackground(MainFrame.darkBgColor);
 		this.setBackground(MainFrame.darkBgColor);
 		
@@ -187,6 +192,7 @@ public class Button extends JPanel implements MouseListener{
 				New.buttonPress(buttonNumber);
 				break;
 			case 2:
+				Open.buttonPress(buttonNumber);
 				break;
 			case 3:
 				break;
@@ -222,6 +228,8 @@ public class Button extends JPanel implements MouseListener{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
+		mainPanel.setOpaque(true);
+		this.setOpaque(true);
 		mainPanel.setBackground(MainFrame.darkBgColor);
 		this.setBackground(MainFrame.darkBgColor);
 	}
@@ -229,7 +237,9 @@ public class Button extends JPanel implements MouseListener{
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		mainPanel.setBackground(MainFrame.darkMidBgColor);
-		this.setBackground(MainFrame.darkMidBgColor);
+		this.setOpaque(false);
+		mainPanel.setOpaque(false);
+		mainPanel.setBackground(null);
+		this.setBackground(null);
 	}
 }

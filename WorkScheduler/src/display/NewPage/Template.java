@@ -24,6 +24,7 @@ import javax.swing.JTextArea;
 import data.EmployeeData;
 import data.StationData;
 import display.MainFrame;
+import display.Schedule;
 import display.OpenPage.Open;
 import main.FileRead;
 import resources.Button;
@@ -292,6 +293,7 @@ public class Template extends JPanel{
 					pushData();
 					Open.addStationData(stationsData); //adds data to open
 					Open.addEmpData(empData);
+					Open.addDays(days);
 					Open.setPanel(); //to reset and have all the made schedules
 					New.setAllPanels(4, new Schedule(days, filePathStation, filePathEmp));
 					New.footerPress(buttonNumber);

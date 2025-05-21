@@ -69,10 +69,10 @@ public class SchedButton extends JPanel implements MouseListener{
 		
 		buttons = new Button[2];
 		//remove
-		buttons[0] = new Button("x", 15, 0);
+		buttons[0] = new Button("x", 15, buttonNumber + 1);
 		panel.add(buttons[0], BorderLayout.EAST);
 		//rename
-		buttons[1] = new Button("A|", 15, 1);
+		buttons[1] = new Button("A|", 15, buttonNumber + 2);
 		panel.add(buttons[1], BorderLayout.WEST);
 		
 		return panel;
@@ -120,9 +120,9 @@ public class SchedButton extends JPanel implements MouseListener{
 				tablePanel1.setBackground(MainFrame.darkMidBgColor);
 				String[] times = {empData.get(i).getAvailSun(), empData.get(i).getAvailMon(), empData.get(i).getAvailTue(), empData.get(i).getAvailWed(), empData.get(i).getAvailThur(), empData.get(i).getAvailFri(), empData.get(i).getAvailSat()};
 				JLabel names1 = new JLabel(times[dayAt]);
-				names.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 8));
-				names.setForeground(MainFrame.brightBgColor);
-				names.setHorizontalAlignment(SwingConstants.CENTER);
+				names1.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 8));
+				names1.setForeground(MainFrame.brightBgColor);
+				names1.setHorizontalAlignment(SwingConstants.CENTER);
 				tablePanel1.add(names1);
 				table.add(tablePanel1, i);
 			} else {
@@ -146,7 +146,7 @@ public class SchedButton extends JPanel implements MouseListener{
 		panel.setOpaque(false);
 		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		
-		title = new JLabel("Created Schedule " + buttonNumber);
+		title = new JLabel("Created Schedule " + buttonNumber/3);
 		title.setForeground(MainFrame.brightBgColor);
 		title.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 20));
 		title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -177,13 +177,13 @@ public class SchedButton extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		Open.buttonPress(buttonNumber);
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		this.setBackground(MainFrame.brightBgColor);
+		this.setBorder(BorderFactory.createLineBorder(MainFrame.brightBgColor, 1));
 		
 		this.setVisible(true);
 		this.revalidate();
@@ -193,7 +193,7 @@ public class SchedButton extends JPanel implements MouseListener{
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		this.setBackground(MainFrame.midBgColor);
+		this.setBorder(BorderFactory.createLineBorder(MainFrame.midBgColor, 1));
 		
 		this.setVisible(true);
 		this.revalidate();
@@ -203,7 +203,8 @@ public class SchedButton extends JPanel implements MouseListener{
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		this.setBackground(MainFrame.midBgColor);
+		this.setOpaque(true);
+		this.setBackground(MainFrame.darkBgColor);
 		
 		this.setVisible(true);
 		this.revalidate();
