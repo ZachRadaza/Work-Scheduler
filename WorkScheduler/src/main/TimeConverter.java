@@ -2,6 +2,8 @@ package main;
 
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class TimeConverter{
 	
 	//converts 0:00 to 0.00
@@ -24,9 +26,12 @@ public class TimeConverter{
 			
 			return hour + min;
 		} catch(NumberFormatException e){
+			/*
 			System.err.println("Incorrect inputs");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			*/
+			JOptionPane.showMessageDialog(null, "There has been an error with the files uploaded", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
 			return 0f;
 		}
 	}
@@ -46,9 +51,12 @@ public class TimeConverter{
 			}
 		return hour + ":" + min;
 		} catch(NumberFormatException e){
+			/*
 			System.err.println("Incorrect inputs");
 			System.err.println(e.getMessage());
 			e.printStackTrace();
+			*/
+			JOptionPane.showMessageDialog(null, "There has been an error with the files uploaded", "Data Misinput", JOptionPane.INFORMATION_MESSAGE);
 			return null;
 		}
 	}

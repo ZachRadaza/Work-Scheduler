@@ -72,7 +72,7 @@ public class New extends Page{
 			
 			panel0BoardHome[i] = new JPanel();
 			panel0BoardHome[i].setOpaque(false);
-			panel0BoardHome[i].setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+			panel0BoardHome[i].setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			panel0BoardHome[i].add(panel0Board[i]);
 			
 			panel0Center.add(panel0BoardHome[i]);
@@ -80,7 +80,7 @@ public class New extends Page{
 		
 		//sets buttons
 		String[] buttonStrings = {"Manually Add Elements", "Use Templates", "Manually Add Elements", "Use Templates", "Manually Add Elements", "Use Templates"};
-		String[] buttonFilePaths = {"media/taskBar/homeIcon.png", "media/taskBar/homeIcon.png", "media/taskBar/homeIcon.png", "media/taskBar/homeIcon.png", "media/taskBar/homeIcon.png", "media/taskBar/homeIcon.png"};
+		String[] buttonFilePaths = {"media/NewPage/Create1.png", "media/NewPage/Template1.png", "media/NewPage/Create7.png", "media/NewPage/Template7.png", "media/NewPage/Create5.png", "media/NewPage/Template5.png"};
 		for(int i = 0; i < buttonStrings.length; i++){
 			buttonPanel0[i] = new Button(buttonStrings[i], 300, 300, 15, i, true, buttonFilePaths[i]);
 			if(i < 2) panel0Board[0].add(buttonPanel0[i]);
@@ -100,12 +100,17 @@ public class New extends Page{
 		panel0.repaint();
 	}
 	
-	public static void setAllPanels(int i, JPanel panel){
-		allPanels[i] = panel;
-	}
-	
 	public static JPanel getAllPanel(int i){
 		return allPanels[i];
+	}
+	
+	public static Button getButtonPanel0(int i){
+		if(i < buttonPanel0.length) return buttonPanel0[i];
+		else return null;
+	}
+	
+	public static void setAllPanels(int i, JPanel panel){
+		allPanels[i] = panel;
 	}
 	
 	public static void setPanelLevel(int i){

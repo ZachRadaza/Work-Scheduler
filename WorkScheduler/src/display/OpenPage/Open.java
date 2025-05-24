@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 
 import data.EmployeeData;
 import data.StationData;
+import display.Home;
 import display.MainFrame;
 import display.Page;
 import display.Schedule;
@@ -35,6 +36,7 @@ public class Open extends Page{
 	private static JPanel panel0 = new JPanel();
 
 	private static LinkedList<SchedButton> schedules = new LinkedList<>();
+	private static LinkedList<String> schedulesNames = new LinkedList<>();
 	private static ArrayList<ArrayList<StationData>> stationData = new ArrayList<>();
 	private static ArrayList<ArrayList<EmployeeData>> empData = new ArrayList<>();
 	private static ArrayList<Integer> days = new ArrayList<>();
@@ -62,8 +64,8 @@ public class Open extends Page{
 		if(stationData.size() != 0){
 			int height = stationData.size() / 3;
 			if(height < 1 || height % 3 != 0) height++;
-			System.out.println("height % 3 = " + height % 3);
 			JPanel[] row = new JPanel[height];
+			schedules.clear();
 			for(int i = 0; i < row.length; i++){
 				row[i] = new JPanel();
 				row[i].setLayout(new GridLayout(1, 3, 10, 10));
@@ -75,7 +77,7 @@ public class Open extends Page{
 				//adds schedules
 				for(int j = 0; j < 3; j++){
 					if((3 * i) + j < stationData.size()){
-						schedules.add(new SchedButton(((3 * i) + j) * 3, stationData.get((3 * i) + j).get(0), empData.get((3 * i) + j)));
+						schedules.add(new SchedButton(((3 * i) + j) * 3, stationData.get((3 * i) + j).get(0), empData.get((3 * i) + j), schedulesNames.get((3 * i) + j)));
 						row[i].add(schedules.get(schedules.size() - 1), j);
 					} else {
 						JPanel empty = new JPanel();
@@ -118,6 +120,7 @@ public class Open extends Page{
 	
 	public static void addStationData(ArrayList<StationData> data){
 		stationData.add(data);
+		schedulesNames.add("Schedule" + schedulesNames.size());
 	}
 	
 	public static void addEmpData(ArrayList<EmployeeData> data){
@@ -138,6 +141,27 @@ public class Open extends Page{
 	
 	public static void replaceDays(int day, int i){
 		days.set(i, day);
+	}
+	
+	public static ArrayList<StationData> getStationData(int i){
+		return stationData.get(i);
+	}
+	
+	public static int getStationDataSize(){
+		return stationData.size();
+	}
+	
+	public static ArrayList<EmployeeData> getEmployeeData(int i){
+		return empData.get(i);
+	}
+	
+	public static String getSchedulesNames(int i){
+		return schedulesNames.get(i);
+	}
+	
+	public static SchedButton getSchedButton(int i){
+		if(i < schedules.size()) return schedules.get(i);
+		else return null;
 	}
 	
 	public static void footerPress(int button){ //0 == back, 1 == next
@@ -162,11 +186,15 @@ public class Open extends Page{
 				stationData.remove((buttonNumber - 1) / 3);
 				empData.remove((buttonNumber - 1) / 3);
 				days.remove((buttonNumber - 1) / 3);
+				schedulesNames.remove((buttonNumber - 1) / 3);
 				setPanel();
+				Home.updateOpenPanel();
 			} else if(buttonNumber % 3 == 2){ //rename
 				String input = JOptionPane.showInputDialog(null, "Enter New Title for the Schedule", "Rename Schedule", 0);
 		        if(input != null) {
+		        	schedulesNames.set((buttonNumber - 2)/ 3, input);
 		            schedules.get((buttonNumber - 2)/ 3).rename(input);
+		            Home.updateOpenPanel();
 		        } 
 			}
 		} else if(panelLevel == 1){

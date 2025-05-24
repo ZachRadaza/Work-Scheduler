@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 
 import data.EmployeeData;
 import data.StationData;
+import display.Home;
 import display.MainFrame;
 import display.Schedule;
 import display.OpenPage.Open;
@@ -625,6 +626,7 @@ public class Create extends JPanel{
 					Open.addEmpData(panelEmpData);
 					Open.addDays(days);
 					Open.setPanel(); //adds buttons to edit
+					Home.updateOpenPanel();
 					New.setAllPanels(4, new Schedule(days, startingDay, true));
 					New.adjustPanelLevel(1);
 					New.footerPress(buttonNumber);
@@ -640,6 +642,7 @@ public class Create extends JPanel{
 			panelCreateCenter.repaint();
 		} else{ //remove button
 			panelCreateCenter.remove(panelStaEmp.get(buttonNumber - 3));
+			panelStaEmpTextFields.remove(buttonNumber - 3);
 			panelCreateCenter.setVisible(true);
 			panelCreateCenter.revalidate();
 			panelCreateCenter.repaint();

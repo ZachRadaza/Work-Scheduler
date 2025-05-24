@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 public class FileRead{
 	//station static fields
@@ -123,6 +124,8 @@ public class FileRead{
 			e.printStackTrace();
 			*/
 			return false;
+		} catch(NoSuchElementException e){
+			return false;
 		}
 		
 	}
@@ -202,6 +205,8 @@ public class FileRead{
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 			*/
+			return false;
+		} catch(NoSuchElementException e){
 			return false;
 		}
 	}

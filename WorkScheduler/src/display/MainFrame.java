@@ -20,7 +20,7 @@ public class MainFrame{
 	public static final Color midBgColor = new Color(175, 181, 204);
 	public static final Color brightBgColor = new Color(239, 246, 238);
 	
-	private TaskBar taskBar;
+	private static TaskBar taskBar;
 	//panels for the different pages
 	public static Home homePanel;
 	public static New newPanel;
@@ -110,6 +110,12 @@ public class MainFrame{
 		aboutPanel.repaint();
 		lastPanel = aboutPanel;
 		lastPanelInt = 4;
+	}
+	
+	protected static void doTaskBarClick(int i){
+		if(i < 4)
+			taskBar.getTaskBarButton(i).mouseClicked(null);
+		else System.out.println("cant do that");
 	}
 	
 	public static int getLastPanelInt(){

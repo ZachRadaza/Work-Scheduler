@@ -23,6 +23,7 @@ import javax.swing.JTextArea;
 
 import data.EmployeeData;
 import data.StationData;
+import display.Home;
 import display.MainFrame;
 import display.Schedule;
 import display.OpenPage.Open;
@@ -183,7 +184,7 @@ public class Template extends JPanel{
 		else fileName.setText(filePathEmp);
 			
 		JLabel labelIcon = new JLabel();
-		labelIcon.setIcon(new ImageIcon(new ImageIcon("media/taskBar/homeIcon.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
+		labelIcon.setIcon(new ImageIcon(new ImageIcon("media/NewPage/Template" + days + ".png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)));
 		labelIcon.setAlignmentX(CENTER_ALIGNMENT);
 		labelIcon.setAlignmentY(CENTER_ALIGNMENT);
 		labelIcon.setOpaque(false);
@@ -295,6 +296,7 @@ public class Template extends JPanel{
 					Open.addEmpData(empData);
 					Open.addDays(days);
 					Open.setPanel(); //to reset and have all the made schedules
+					Home.updateOpenPanel();
 					New.setAllPanels(4, new Schedule(days, filePathStation, filePathEmp));
 					New.footerPress(buttonNumber);
 				}

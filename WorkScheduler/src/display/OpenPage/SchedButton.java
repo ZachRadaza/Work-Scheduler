@@ -16,6 +16,7 @@ import javax.swing.SwingConstants;
 
 import data.EmployeeData;
 import data.StationData;
+import display.Home;
 import display.MainFrame;
 import resources.Button;
 
@@ -28,6 +29,7 @@ public class SchedButton extends JPanel implements MouseListener{
 	private int buttonNumber;
 	private StationData stationData;
 	private ArrayList<EmployeeData> empData;
+	private boolean homeButton;
 	
 	private JLabel title;
 	private Button[] buttons;
@@ -38,8 +40,51 @@ public class SchedButton extends JPanel implements MouseListener{
 		this.buttonNumber = buttonNumber;
 		this.stationData = stationData;
 		this.empData = empData;
+		this.homeButton = false;
 		
 		setMainPanel();
+		
+		//for preferred size
+		Dimension dimension = this.getPreferredSize();
+		dimension.height = 200;
+		this.setMaximumSize(dimension);
+		
+		this.setVisible(true);
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public SchedButton(int buttonNumber, StationData stationData, ArrayList<EmployeeData> empData, String titleString){
+		addMouseListener(this);
+		
+		this.buttonNumber = buttonNumber;
+		this.stationData = stationData;
+		this.empData = empData;
+		this.homeButton = false;
+		
+		setMainPanel();
+		rename(titleString);
+		
+		//for preferred size
+		Dimension dimension = this.getPreferredSize();
+		dimension.height = 200;
+		this.setMaximumSize(dimension);
+		
+		this.setVisible(true);
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public SchedButton(int buttonNumber, StationData stationData, ArrayList<EmployeeData> empData, String titleString, boolean HomeButton){
+		addMouseListener(this);
+		
+		this.buttonNumber = buttonNumber;
+		this.stationData = stationData;
+		this.empData = empData;
+		this.homeButton = HomeButton;
+		
+		setMainPanel();
+		rename(titleString);
 		
 		//for preferred size
 		Dimension dimension = this.getPreferredSize();
@@ -56,7 +101,7 @@ public class SchedButton extends JPanel implements MouseListener{
 		this.setBorder(BorderFactory.createLineBorder(MainFrame.midBgColor, 1));
 		this.setLayout(new BorderLayout());
 		
-		this.add(setButtons(), BorderLayout.NORTH);
+		if(!homeButton) this.add(setButtons(), BorderLayout.NORTH);
 		this.add(setMiddleIcon(), BorderLayout.CENTER);
 		this.add(setTitle(), BorderLayout.SOUTH);
 	}
@@ -173,11 +218,15 @@ public class SchedButton extends JPanel implements MouseListener{
 		title.setVisible(true);
 		title.revalidate();
 		title.repaint();
+		this.setVisible(true);
+		this.revalidate();
+		this.repaint();
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		Open.buttonPress(buttonNumber);
+		if(homeButton) Home.buttonPress(buttonNumber);
+		else Open.buttonPress(buttonNumber);
 	}
 
 	@Override

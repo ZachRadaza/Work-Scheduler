@@ -44,6 +44,11 @@ public class TaskBar extends JPanel{
 		for(int i = 0; i < buttons.length; i++)	if(i != n) buttons[i].unPress();
 		
 	}
+	
+	public TaskBarButton getTaskBarButton(int i){
+		return buttons[i];
+	}
+	
 	//checks which button was pressed, changes panels based on it
 	public static void buttonPressed(int n){
 		switch(n){

@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 
+import display.Home;
 import display.MainFrame;
 import display.NewPage.New;
 import display.OpenPage.Open;
@@ -173,9 +174,6 @@ public class Button extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("1");
-		
-		
 		underline = new MatteBorder(0, 0, 2, 0, MainFrame.darkBgColor);
 		mainPanel.setBorder(underline);
 		
@@ -186,7 +184,7 @@ public class Button extends JPanel implements MouseListener{
 		
 		switch(MainFrame.getLastPanelInt()){
 			case 0:
-				
+				Home.buttonPress(buttonNumber);
 				break;
 			case 1:
 				New.buttonPress(buttonNumber);

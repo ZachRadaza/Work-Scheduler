@@ -129,9 +129,6 @@ public class TaskBarButton extends JPanel implements MouseListener{
 		
 		this.revalidate();
 		this.repaint();
-		this.isVisible();
-		
-		System.out.println("test");
 	}
 	
 	//when mouse is hovered
