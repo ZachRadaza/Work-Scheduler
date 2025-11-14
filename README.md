@@ -2,6 +2,8 @@
 
 A desktop scheduling tool that builds efficient employee shift schedules based on business constraints. Managers enter store hours, station hours, employee availability/preferences, and staffing targets. The app then generates a feasible schedule that respects constraints while aiming for coverage and fairness.
 
+---
+
 ## What it does
 - **Collects inputs via GUI**:
   - **Store Hours** (open/close times, per day)
@@ -49,8 +51,10 @@ A desktop scheduling tool that builds efficient employee shift schedules based o
    ```bash
    java -cp bin main.Main
 
-## Folder Structure
+---
 
+## Folder Structure
+```plaintext
 WorkScheduler/
  ├── .settings/        # Eclipse settings
  ├── bin/              # Compiled classes
@@ -66,3 +70,4 @@ WorkScheduler/
      ├── display/
      ├── main/         # Contains Main.java (entry point)
      └── resources/
+```
